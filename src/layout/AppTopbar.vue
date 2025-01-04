@@ -18,24 +18,24 @@ const checkActiveRoute = (item) => route.path === item.to;
 
 const items = ref([
   {
+    label: "Винные карты",
+    icon: "pi pi-users",
+    to: RoutePath.List,
+  },
+  {
     label: "Вина",
     icon: "pi pi-users",
-    to: RoutePath.Wine,
+    to: RoutePath.ListItem,
   },
   // {
-  //   label: "Приглашенные",
+  //   label: "Вина",
   //   icon: "pi pi-users",
-  //   to: RoutePath.Invitation,
+  //   to: RoutePath.Wine,
   // },
   {
-    label: "Grape",
+    label: "Приглашенные",
     icon: "pi pi-users",
-    to: RoutePath.Grape,
-  },
-  {
-    label: "Регионы",
-    icon: "pi pi-users",
-    to: RoutePath.Region,
+    to: RoutePath.Invitation,
   },
   {
     label: "Настройки",

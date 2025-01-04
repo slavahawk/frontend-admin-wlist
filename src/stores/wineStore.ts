@@ -1,4 +1,3 @@
-// src/stores/wineStore.ts
 import { ref } from "vue";
 import { defineStore } from "pinia";
 import WineService from "@/service/WineService";

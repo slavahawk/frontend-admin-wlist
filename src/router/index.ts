@@ -4,27 +4,25 @@ import { useAuthStore } from "@/stores/authStore";
 import { api, initializeAuth } from "@/api/api.ts";
 
 export enum AppRoutes {
-  DASHBOARD = "Dashboard",
   LOGIN = "Login",
   REG = "Reg",
   INVITATION = "Invitation",
   INVITATION_CONFIRM = "InvitationConfirm",
   COMMON = "Common",
   WINE = "Wine",
-  GRAPE = "Grape",
-  REGION = "Region",
+  LIST = "List",
+  LIST_ITEM = "ListItem",
 }
 
 export const RoutePath: Record<AppRoutes, string> = {
-  [AppRoutes.DASHBOARD]: "/",
+  [AppRoutes.WINE]: "/",
   [AppRoutes.LOGIN]: "/auth/login",
   [AppRoutes.REG]: "/auth/reg",
   [AppRoutes.INVITATION]: "/invitation",
   [AppRoutes.INVITATION_CONFIRM]: "/invitation/:token/confirm",
   [AppRoutes.COMMON]: "/common",
-  [AppRoutes.WINE]: "/wine",
-  [AppRoutes.GRAPE]: "/grape",
-  [AppRoutes.REGION]: "/region",
+  [AppRoutes.LIST]: "/list",
+  [AppRoutes.LIST_ITEM]: "/list_item",
 };
 
 const router = createRouter({
@@ -61,15 +59,15 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
-          path: RoutePath.Grape,
-          name: AppRoutes.GRAPE,
-          component: () => import("@/views/grape/Grape.vue"),
+          path: RoutePath.List,
+          name: AppRoutes.LIST,
+          component: () => import("@/views/List.vue"),
           meta: { requiresAuth: true },
         },
         {
-          path: RoutePath.Region,
-          name: AppRoutes.REGION,
-          component: () => import("@/views/region/Region.vue"),
+          path: RoutePath.ListItem,
+          name: AppRoutes.LIST_ITEM,
+          component: () => import("@/views/ListItem.vue"),
           meta: { requiresAuth: true },
         },
       ],
@@ -83,28 +81,28 @@ const router = createRouter({
     {
       path: "/:pathMatch(.*)*",
       name: "notfound",
-      component: () => import("@/views/pages/NotFound.vue"),
+      component: () => import("@/views/NotFound.vue"),
     },
 
     {
       path: RoutePath.Login,
       name: AppRoutes.LOGIN,
-      component: () => import("@/views/pages/auth/Login.vue"),
+      component: () => import("@/views/auth/Login.vue"),
     },
     {
       path: RoutePath.Reg,
       name: AppRoutes.REG,
-      component: () => import("@/views/pages/auth/Reg.vue"),
+      component: () => import("@/views/auth/Reg.vue"),
     },
     {
       path: "/auth/access",
       name: "accessDenied",
-      component: () => import("@/views/pages/auth/Access.vue"),
+      component: () => import("@/views/auth/Access.vue"),
     },
     {
       path: "/auth/error",
       name: "error",
-      component: () => import("@/views/pages/auth/Error.vue"),
+      component: () => import("@/views/auth/Error.vue"),
     },
   ],
 });
