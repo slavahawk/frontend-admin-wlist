@@ -13,18 +13,11 @@ export interface WineListItem {
 export interface WineList {
   id: number; // ID списка вин
   name: string; // Название списка вин
-  shop: Shop; // Магазин, которому принадлежит список вин
-  wines: WineListItem[]; // Элементы списка вин
+  shopId: number; // Магазин, которому принадлежит список вин
+  itemCount: number; // Элементы списка вин
   isDeleted: boolean; // Флаг удаления
   createdAt: string; // Дата создания в формате 'YYYY-MM-DDTHH:mm:ssZ'
   updatedAt: string; // Дата обновления в формате 'YYYY-MM-DDTHH:mm:ssZ'
-}
-
-export interface Shop {
-  id: number; // ID магазина
-  name: string; // Название магазина
-  createdAt: string; // Дата создания в формате 'YYYY-MM-DD'
-  paidTill: string; // Дата окончания оплаты в формате 'YYYY-MM-DD'
 }
 
 export interface Request {

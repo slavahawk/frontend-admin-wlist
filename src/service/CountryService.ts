@@ -1,5 +1,5 @@
 import { api } from "@/api/api";
-import type { Country, CountryRequest } from "@/types/country";
+import type { Country } from "@/types/country";
 
 const CountryService = {
   async getCountryById(id: number): Promise<Country> {
@@ -8,38 +8,6 @@ const CountryService = {
       return response.data;
     } catch (error) {
       console.error(`Ошибка при получении страны с ID ${id}:`, error);
-      throw error;
-    }
-  },
-
-  async updateCountry(
-    id: number,
-    countryData: CountryRequest,
-  ): Promise<Country> {
-    try {
-      const response = await api.put<Country>(`/countries/${id}`, countryData);
-      return response.data;
-    } catch (error) {
-      console.error(`Ошибка при обновлении страны с ID ${id}:`, error);
-      throw error;
-    }
-  },
-
-  async deleteCountry(id: number): Promise<void> {
-    try {
-      await api.delete(`/countries/${id}`);
-    } catch (error) {
-      console.error(`Ошибка при удалении страны с ID ${id}:`, error);
-      throw error;
-    }
-  },
-
-  async createCountry(countryData: CountryRequest): Promise<Country> {
-    try {
-      const response = await api.post<Country>("/countries", countryData);
-      return response.data;
-    } catch (error) {
-      console.error("Ошибка при создании страны:", error);
       throw error;
     }
   },

@@ -1,16 +1,19 @@
-// src/stores/wineListStore.ts
-
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { defineStore } from "pinia";
 import WineListService from "@/service/WineListService"; // Путь к сервису управления списками вин
-import type { Request, WineList } from "@/types/wineList"; // Импортируем интерфейсы из types
+import type { Request, WineList } from "@/types/wineList";
+import { SELECT_LIST } from "@/const/localstorage.ts"; // Импортируем интерфейсы из types
 
 export const useWineListStore = defineStore("wineList", () => {
   const wineLists = ref<WineList[]>([]);
-  const selectedWineList = ref<WineList | null>(null);
+  const wineList = ref<WineList | null>(null);
   const selectedWineListId = ref<number | null>(null);
   const loading = ref(false);
   const error = ref<string | null>(null);
+
+  if (localStorage.getItem(SELECT_LIST)) {
+    selectedWineListId.value = Number(localStorage.getItem(SELECT_LIST));
+  }
 
   // Функция для получения всех списков вин
   const fetchWineLists = async () => {
@@ -29,6 +32,7 @@ export const useWineListStore = defineStore("wineList", () => {
 
   const setWineListId = (id: number) => {
     selectedWineListId.value = id;
+    localStorage.setItem(SELECT_LIST, String(id));
   };
 
   // Функция для получения списка вин по ID
@@ -37,7 +41,7 @@ export const useWineListStore = defineStore("wineList", () => {
     error.value = null;
 
     try {
-      selectedWineList.value = await WineListService.getWineListById(id);
+      wineList.value = await WineListService.getWineListById(id);
     } catch (err) {
       error.value = "Ошибка при получении списка вин. Попробуйте еще раз.";
       console.error(err);
@@ -103,12 +107,14 @@ export const useWineListStore = defineStore("wineList", () => {
 
   // Функция для очистки выбранного списка вин
   const clearSelectedWineList = () => {
-    selectedWineList.value = null;
+    wineList.value = null;
   };
+
+  const isSelectedWineList = computed(() => !!selectedWineListId.value);
 
   return {
     wineLists,
-    selectedWineList,
+    wineList,
     loading,
     error,
     fetchWineLists,
@@ -119,5 +125,6 @@ export const useWineListStore = defineStore("wineList", () => {
     clearSelectedWineList,
     setWineListId,
     selectedWineListId,
+    isSelectedWineList,
   };
 });

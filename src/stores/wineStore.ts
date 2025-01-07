@@ -2,7 +2,6 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import WineService from "@/service/WineService";
 import type {
-  CreateWineRequest,
   Wine,
   WineFilters,
   WineRequest,
@@ -39,7 +38,9 @@ export const useWineStore = defineStore("wine", () => {
     errorSearch.value = null;
 
     try {
-      winesSearch.value = await WineService.getWineSearch(params);
+      const data = await WineService.getWineSearch(params);
+      winesSearch.value = data;
+      return data;
     } catch (err) {
       error.value = "Ошибка при получении вин. Попробуйте еще раз.";
       console.error(err);
@@ -76,55 +77,6 @@ export const useWineStore = defineStore("wine", () => {
     }
   };
 
-  const createWine = async (wineData: CreateWineRequest, image: File) => {
-    loading.value = true;
-    error.value = null;
-
-    try {
-      const newWine = await WineService.createWine(wineData, image);
-      // wines.value._embedded.rootWineResponseList.push(newWine);
-      return newWine;
-    } catch (err) {
-      error.value = "Ошибка при создании вина. Попробуйте еще раз.";
-      console.error(err);
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  const updateWine = async (id: number, wineData: CreateWineRequest) => {
-    loading.value = true;
-    error.value = null;
-
-    try {
-      const updatedWine = await WineService.updateWine(id, wineData);
-      const index = wines.value.findIndex((wine) => wine.id === id);
-      if (index !== -1) {
-        wines.value[index] = updatedWine;
-      }
-    } catch (err) {
-      error.value = "Ошибка при обновлении вина. Попробуйте еще раз.";
-      console.error(err);
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  const deleteWine = async (id: number) => {
-    loading.value = true;
-    error.value = null;
-
-    try {
-      await WineService.deleteWine(id);
-      wines.value = wines.value.filter((wine) => wine.id !== id);
-    } catch (err) {
-      error.value = "Ошибка при удалении вина. Попробуйте еще раз.";
-      console.error(err);
-    } finally {
-      loading.value = false;
-    }
-  };
-
   const clearSelectedWine = () => {
     selectedWine.value = null;
   };
@@ -138,9 +90,6 @@ export const useWineStore = defineStore("wine", () => {
     fetchWines,
     fetchWinesFilter,
     fetchWineById,
-    createWine,
-    updateWine,
-    deleteWine,
     clearSelectedWine,
     winesSearch,
     fetchWinesSearch,

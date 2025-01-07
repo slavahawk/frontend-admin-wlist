@@ -5,15 +5,15 @@ import { RoutePath } from "@/router";
 import { useAuthStore } from "@/stores/authStore.ts";
 import Logo from "@/assets/images/svg/Logo.vue";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
-import WineSearchDialog from "@/components/wine/WineSearchDialog.vue"; // Import the new dialog component
+import { useWineListStore } from "@/stores/wineListStore.ts"; // Import the new dialog component
 
 const { toggleDarkMode, isDarkTheme } = useLayout();
 const { logout } = useAuthStore();
 const { isLoad } = storeToRefs(useAuthStore());
 const route = useRoute();
-
+const { isSelectedWineList } = storeToRefs(useWineListStore());
 const checkActiveRoute = (item) => route.path === item.to;
 
 const items = ref([
@@ -26,12 +26,8 @@ const items = ref([
     label: "Вина",
     icon: "pi pi-users",
     to: RoutePath.ListItem,
+    disabled: true,
   },
-  // {
-  //   label: "Вина",
-  //   icon: "pi pi-users",
-  //   to: RoutePath.Wine,
-  // },
   {
     label: "Приглашенные",
     icon: "pi pi-users",
@@ -44,13 +40,17 @@ const items = ref([
   },
 ]);
 
-const showSearch = ref(false);
+watchEffect(() => {
+  if (isSelectedWineList.value) {
+    items.value[1].disabled = !isSelectedWineList.value;
+  }
+});
 </script>
 
 <template>
   <Menubar :model="items" class="layout-topbar">
     <template #start>
-      <router-link :to="RoutePath.Wine" class="layout-topbar-logo">
+      <router-link :to="RoutePath.List" class="layout-topbar-logo">
         <Logo />
         <span>W-List</span>
       </router-link>
@@ -67,12 +67,6 @@ const showSearch = ref(false);
     </template>
     <template #end>
       <div class="flex items-center gap-4">
-        <Button
-          link
-          type="button"
-          icon="pi pi-search"
-          @click="showSearch = true"
-        />
         <div class="layout-config-menu">
           <Button @click="toggleDarkMode" link>
             <i
@@ -122,11 +116,6 @@ const showSearch = ref(false);
           icon="pi pi-sign-out"
         ></Button>
       </div>
-
-      <WineSearchDialog
-        :visible="showSearch"
-        @update:visible="showSearch = false"
-      />
     </template>
   </Menubar>
 </template>

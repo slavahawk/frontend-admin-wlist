@@ -2,17 +2,20 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import WineListItemService from "@/service/WineListItemService";
-import { type CreateWineList, type WineListItem } from "@/types/wineListItem";
+import {
+  type CreateWineList,
+  type WineListItemResponses,
+} from "@/types/wineListItem";
 
 export const useWineListItemStore = defineStore("wineListItems", () => {
-  const wineListItems = ref<WineListItem[]>([]);
+  const wineListItems = ref<WineListItemResponses>();
   const loading = ref(false);
   const selectedWineListItemId = ref<number | null>(null);
 
-  const fetchWineListItems = async () => {
+  const fetchWineListItems = async (listId: number) => {
     loading.value = true;
     try {
-      wineListItems.value = await WineListItemService.getWineListItems();
+      wineListItems.value = await WineListItemService.getWineListItems(listId);
     } catch (error) {
       console.error("Error fetching wine list items:", error);
     } finally {
@@ -20,10 +23,10 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
     }
   };
 
-  const fetchWineListItemById = async (id: number) => {
+  const fetchWineListItemById = async (listId: number, id: number) => {
     loading.value = true;
     try {
-      const item = await WineListItemService.getWineListItemById(id);
+      const item = await WineListItemService.getWineListItemById(listId, id);
       // handle the item as needed (e.g., set to state, show in dialog)
     } catch (error) {
       console.error("Error fetching wine list item by ID:", error);
@@ -34,12 +37,12 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
 
   const createWineListItem = async (wineListItem: CreateWineList) => {
     await WineListItemService.createWineListItem(wineListItem);
-    await fetchWineListItems(); // Refresh the list after creation
+    await fetchWineListItems(selectedWineListItemId.value); // Refresh the list after creation
   };
 
   const deleteWineListItem = async (id: number) => {
     await WineListItemService.deleteWineListItem(id);
-    await fetchWineListItems(); // Refresh the list after deletion
+    await fetchWineListItems(selectedWineListItemId.value); // Refresh the list after deletion
   };
 
   return {

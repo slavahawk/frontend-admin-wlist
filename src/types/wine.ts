@@ -96,20 +96,6 @@ export interface WineResponses {
   };
 }
 
-export interface WineQueryParams {
-  page: number;
-  size: number;
-  category?: WineCategory;
-  colour?: WineColour;
-  sugarType?: SugarType;
-  countryId?: number;
-  regionId?: number;
-  grapeId?: number;
-  vintage?: number;
-  bottleVolume?: number;
-  sort?: string;
-}
-
 export interface WineRequestSearch {
   name: string;
   page: number;

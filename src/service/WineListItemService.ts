@@ -1,11 +1,17 @@
 import { api } from "@/api/api"; // Импортируем настроенный экземпляр axios
-import type { CreateWineList, WineListItem } from "@/types/wineListItem"; // Импортируем интерфейс WineListItem
+import type {
+  CreateWineList,
+  WineListItem,
+  WineListItemResponses,
+} from "@/types/wineListItem"; // Импортируем интерфейс WineListItem
 import type { Request } from "@/types/wineList"; // Импортируем тип Request, если необходимо
 
 const WineListItemService = {
-  async getWineListItems(): Promise<WineListItem[]> {
+  async getWineListItems(listId: number): Promise<WineListItemResponses> {
     try {
-      const response = await api.get<WineListItem[]>("/wine-list-items");
+      const response = await api.get<WineListItemResponses>(
+        `/wine-lists/${listId}/items`,
+      );
       return response.data;
     } catch (error) {
       console.error("Ошибка при получении списка винных позиций:", error);
@@ -13,9 +19,14 @@ const WineListItemService = {
     }
   },
 
-  async getWineListItemById(id: number): Promise<WineListItem> {
+  async getWineListItemById(
+    listId: number,
+    itemId: number,
+  ): Promise<WineListItem> {
     try {
-      const response = await api.get<WineListItem>(`/wine-list-items/${id}`);
+      const response = await api.get<WineListItem>(
+        `/wine-lists/${listId}/items/${itemId}`,
+      );
       return response.data;
     } catch (error) {
       console.error(`Ошибка при получении винной позиции с ID ${id}:`, error);
@@ -31,8 +42,9 @@ const WineListItemService = {
   }: CreateWineList): Promise<WineListItem> {
     try {
       const response = await api.post<WineListItem>(
-        `/wine-list-items/${wineListId}/add`,
-        { wineId, pricePerBottle, pricePerGlass },
+        `/wine-list-items/${wineListId}/items`,
+        {},
+        { params: { wineId, pricePerBottle, pricePerGlass } },
       );
       return response.data;
     } catch (error) {

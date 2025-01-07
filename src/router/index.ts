@@ -9,13 +9,11 @@ export enum AppRoutes {
   INVITATION = "Invitation",
   INVITATION_CONFIRM = "InvitationConfirm",
   COMMON = "Common",
-  WINE = "Wine",
   LIST = "List",
   LIST_ITEM = "ListItem",
 }
 
 export const RoutePath: Record<AppRoutes, string> = {
-  [AppRoutes.WINE]: "/",
   [AppRoutes.LOGIN]: "/auth/login",
   [AppRoutes.REG]: "/auth/reg",
   [AppRoutes.INVITATION]: "/invitation",
@@ -49,13 +47,6 @@ const router = createRouter({
           path: RoutePath.Common,
           name: AppRoutes.COMMON,
           component: () => import("@/views/Common.vue"),
-          meta: { requiresAuth: true },
-        },
-
-        {
-          path: RoutePath.Wine,
-          name: AppRoutes.WINE,
-          component: () => import("@/views/wine/Wine.vue"),
           meta: { requiresAuth: true },
         },
         {
@@ -118,8 +109,6 @@ router.beforeEach((to, from, next) => {
       next({ name: AppRoutes.LOGIN });
     } else {
       initializeAuth();
-
-      console.log("123");
       next();
     }
   } else {

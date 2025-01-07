@@ -1,5 +1,5 @@
 // src/models/WineListItem.ts
-import type { Wine } from "@/types/wine.ts";
+import type { Wine, WineRoot } from "@/types/wine.ts";
 
 export interface WineListItem {
   id: number;
@@ -8,9 +8,25 @@ export interface WineListItem {
   wines: Wine[];
 }
 
-export interface CreateWineList {
-  wineListId: number;
-  wineId: number;
+export interface Prices {
   pricePerBottle: number;
   pricePerGlass?: number;
+}
+
+export interface CreateWineList extends Prices {
+  wineListId: number;
+  wineId: number;
+}
+
+export interface WineListItemResponses {
+  page: {
+    number: number;
+    size: number;
+    totalElements: number;
+    totalPages: number;
+  };
+  _embedded: {
+    adminWineResponseList: Wine[];
+    rootWineResponseList: WineRoot[];
+  };
 }
