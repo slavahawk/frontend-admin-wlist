@@ -18,11 +18,6 @@ const checkActiveRoute = (item) => route.path === item.to;
 
 const items = ref([
   {
-    label: "Винные карты",
-    icon: "pi pi-users",
-    to: RoutePath.List,
-  },
-  {
     label: "Вина",
     icon: "pi pi-users",
     to: RoutePath.ListItem,
@@ -37,6 +32,11 @@ const items = ref([
     label: "Настройки",
     icon: "pi pi-cog",
     to: RoutePath.Common,
+  },
+  {
+    label: "Изменить винную карту",
+    icon: "pi pi-users",
+    to: RoutePath.List,
   },
 ]);
 

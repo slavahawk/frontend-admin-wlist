@@ -20,12 +20,18 @@ export const RoutePath: Record<AppRoutes, string> = {
   [AppRoutes.INVITATION_CONFIRM]: "/invitation/:token/confirm",
   [AppRoutes.COMMON]: "/common",
   [AppRoutes.LIST]: "/list",
-  [AppRoutes.LIST_ITEM]: "/list_item",
+  [AppRoutes.LIST_ITEM]: "/",
 };
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
+    {
+      path: RoutePath.List,
+      name: AppRoutes.LIST,
+      component: () => import("@/views/List.vue"),
+      meta: { requiresAuth: true },
+    },
     {
       path: "/",
       component: AppLayout,
@@ -49,12 +55,7 @@ const router = createRouter({
           component: () => import("@/views/Common.vue"),
           meta: { requiresAuth: true },
         },
-        {
-          path: RoutePath.List,
-          name: AppRoutes.LIST,
-          component: () => import("@/views/List.vue"),
-          meta: { requiresAuth: true },
-        },
+
         {
           path: RoutePath.ListItem,
           name: AppRoutes.LIST_ITEM,

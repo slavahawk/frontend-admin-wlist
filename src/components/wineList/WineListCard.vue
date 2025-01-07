@@ -76,19 +76,14 @@ const emitDelete = () => {
 }
 
 .wine-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Легкая тень при наведении */
+  box-shadow: 0 4px 20px var(--primary-color); /* Легкая тень при наведении */
 }
 
 .wine-card.active {
-  border: 2px solid #4caf50; /* Зеленая рамка для активного состояния */
-  background-color: rgba(
-    76,
-    175,
-    80,
-    0.1
+  border: 2px solid var(--primary-color); /* Зеленая рамка для активного состояния */
+  background-color: var(
+    --primary-contrast-color
   ); /* Светло-зеленый фон для активного состояния */
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); /* Более заметная тень для активного состояния */
 }
 
 .button-group {
