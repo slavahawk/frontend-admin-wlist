@@ -1,7 +1,6 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import CountryService from "@/service/CountryService";
-import type { Country } from "@/types/country";
+import { CountryService, type Country } from "w-list-api";
 
 export const useCountryStore = defineStore("country", () => {
   const countries = ref<Country[]>([]);
@@ -21,7 +20,7 @@ export const useCountryStore = defineStore("country", () => {
     error.value = null;
 
     try {
-      countries.value = await CountryService.getAllCountries();
+      countries.value = await CountryService.getAll();
     } catch (err) {
       error.value = "Ошибка при получении стран. Попробуйте еще раз.";
       console.error(err);
@@ -35,7 +34,7 @@ export const useCountryStore = defineStore("country", () => {
     error.value = null;
 
     try {
-      selectedCountry.value = await CountryService.getCountryById(id);
+      selectedCountry.value = await CountryService.getById(id);
     } catch (err) {
       error.value = "Ошибка при получении страны. Попробуйте еще раз.";
       console.error(err);

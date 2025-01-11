@@ -3,8 +3,7 @@ import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import { handleError } from "@/helper/handleError.ts";
 import { checkData } from "@/helper/checkData.ts";
-import type { Invitation } from "@/types/invitation.ts";
-import InvitationService from "@/service/InvitationService.ts";
+import { InvitationService, type Invitation } from "w-list-api";
 
 export const useInvitationStore = defineStore("invitation", () => {
   const invitations = ref<Invitation[]>([]);

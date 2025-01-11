@@ -42,7 +42,7 @@ const items = ref([
 
 watchEffect(() => {
   if (isSelectedWineList.value) {
-    items.value[1].disabled = !isSelectedWineList.value;
+    items.value[0].disabled = !isSelectedWineList.value;
   }
 });
 </script>

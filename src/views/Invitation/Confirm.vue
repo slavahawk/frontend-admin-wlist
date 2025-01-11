@@ -42,7 +42,7 @@ import { reactive } from "vue";
 import { z } from "zod";
 import { handleError } from "@/helper/handleError.ts";
 import { useRoute } from "vue-router";
-import InvitationService from "@/service/InvitationService.ts";
+import { InvitationService } from "w-list-api";
 
 const toast = useToast();
 const { params } = useRoute();

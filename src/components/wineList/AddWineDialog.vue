@@ -69,9 +69,9 @@ import { computed, ref } from "vue";
 import { defineProps, defineEmits } from "vue";
 import { useWineStore } from "@/stores/wineStore.ts";
 import WineDetailCard from "./WineDetailCard.vue"; // Импортируйте ваш новый компонент
-import type { Wine } from "@/types/wine.ts";
+import type { Wine } from "w-list-api";
 import FormSelectPrice from "@/components/form/FormSelectPrice.vue";
-import type { Prices } from "@/types/wineListItem.ts";
+import type { Prices } from "w-list-api";
 import { useWineListItemStore } from "@/stores/wineListItemStore.ts";
 import { storeToRefs } from "pinia";
 import { useWineListStore } from "@/stores/wineListStore.ts";
@@ -118,20 +118,12 @@ const prevStep = () => {
 };
 
 const saveWine = async ({ pricePerBottle, pricePerGlass }: Prices) => {
-  console.log(selectedWineListId.value, findWine.value, {
-    pricePerBottle,
-    pricePerGlass,
-    wineId: findWine.value.id,
-    wineListId: selectedWineListId.value,
-  });
   const data = await createWineListItem({
     pricePerBottle,
     pricePerGlass,
     wineId: findWine.value.id,
     wineListId: selectedWineListId.value,
   });
-
-  console.log(data);
 
   if (data) {
     emit("update:show", false);

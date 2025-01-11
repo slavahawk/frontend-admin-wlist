@@ -33,7 +33,7 @@
 
 <script lang="ts" setup>
 import { defineProps } from "vue";
-import { Wine } from "@/types/wine.ts"; // Импортируйте тип Wine, если это необходимо
+import { type Wine } from "w-list-api"; // Импортируйте тип Wine, если это необходимо
 import Card from "primevue/card";
 import Avatar from "primevue/avatar";
 

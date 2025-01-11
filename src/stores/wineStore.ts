@@ -1,18 +1,18 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import WineService from "@/service/WineService";
-import type {
-  Wine,
-  WineFilters,
-  WineRequest,
-  WineRequestSearch,
-  WineResponses,
-} from "@/types/wine";
+import {
+  WineService,
+  type Wine,
+  type WineFilters,
+  type WineRequest,
+  type SearchWineRequest,
+  type WineResponse,
+} from "w-list-api";
 
 export const useWineStore = defineStore("wine", () => {
-  const wines = ref<WineResponses>();
+  const wines = ref<WineResponse>();
   const winesFilter = ref<WineFilters>();
-  const winesSearch = ref<WineResponses>();
+  const winesSearch = ref<WineResponse>();
   const selectedWine = ref<Wine | null>(null);
   const loading = ref(false);
   const loadingSearch = ref(false);
@@ -24,7 +24,7 @@ export const useWineStore = defineStore("wine", () => {
     error.value = null;
 
     try {
-      wines.value = await WineService.getAllWines(requestParams);
+      wines.value = await WineService.getAll(requestParams);
     } catch (err) {
       error.value = "Ошибка при получении вин. Попробуйте еще раз.";
       console.error(err);
@@ -33,12 +33,12 @@ export const useWineStore = defineStore("wine", () => {
     }
   };
 
-  const fetchWinesSearch = async (params: WineRequestSearch) => {
+  const fetchWinesSearch = async (params: SearchWineRequest) => {
     loadingSearch.value = true;
     errorSearch.value = null;
 
     try {
-      const data = await WineService.getWineSearch(params);
+      const data = await WineService.search(params);
       winesSearch.value = data;
       return data;
     } catch (err) {
@@ -54,7 +54,7 @@ export const useWineStore = defineStore("wine", () => {
     error.value = null;
 
     try {
-      winesFilter.value = await WineService.getWineFilters();
+      winesFilter.value = await WineService.getFilter();
     } catch (err) {
       error.value = "Ошибка при получении вин. Попробуйте еще раз.";
       console.error(err);
@@ -68,7 +68,7 @@ export const useWineStore = defineStore("wine", () => {
     error.value = null;
 
     try {
-      selectedWine.value = await WineService.getWineById(id);
+      selectedWine.value = await WineService.getById(id);
     } catch (err) {
       error.value = "Ошибка при получении вина. Попробуйте еще раз.";
       console.error(err);

@@ -20,7 +20,7 @@
         width="320px"
         height="160px"
         borderRadius="16px"
-        v-for="item in 2"
+        v-for="item in items"
       />
     </div>
 
@@ -39,8 +39,7 @@
         @delete="deleteWineList"
       />
     </div>
-
-    <div v-if="selectedWineListId" class="mt-4">
+    <div v-if="wineLists.length" class="mt-4">
       <Button
         label="Дальше"
         @click="$router.push({ name: AppRoutes.LIST_ITEM })"
@@ -95,7 +94,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useWineListStore } from "@/stores/wineListStore";
 import { storeToRefs } from "pinia";
 import WineListCard from "@/components/wineList/WineListCard.vue";
@@ -162,6 +161,8 @@ const updateWineList = async () => {
 const deleteWineList = async (id: number) => {
   await deleteWineL(id);
 };
+
+const items = computed(() => wineLists.value.length ?? 1);
 </script>
 
 <style scoped>

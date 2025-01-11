@@ -3,14 +3,12 @@ import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import { useRouter } from "vue-router";
 import { AppRoutes } from "@/router";
-import AuthService from "@/service/AuthService.ts";
+import { AuthService, ACCESS_TOKEN, REFRESH_TOKEN } from "w-list-api";
 import { handleError } from "@/helper/handleError.ts";
-import type { User } from "@/types/user.ts";
 import { checkData } from "@/helper/checkData.ts";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/const/localstorage.ts";
 
 export const useAuthStore = defineStore("auth", () => {
-  const user = ref<User | null>(null);
+  const user = ref<any | null>(null);
   const isLoad = ref(false);
   const isAuthenticated = ref(false);
   const toast = useToast();
@@ -70,7 +68,9 @@ export const useAuthStore = defineStore("auth", () => {
   const logout = async () => {
     isLoad.value = true;
     try {
-      await AuthService.logout(localStorage.getItem(REFRESH_TOKEN));
+      await AuthService.logout({
+        refreshToken: localStorage.getItem(REFRESH_TOKEN),
+      });
       isAuthenticated.value = false;
       localStorage.removeItem(REFRESH_TOKEN);
       localStorage.removeItem(ACCESS_TOKEN);

@@ -1,8 +1,7 @@
 // src/stores/grapeStore.ts
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import GrapeService from "@/service/GrapeService";
-import type { Grape } from "@/types/grape";
+import { GrapeService, type Grape } from "w-list-api";
 
 export const useGrapeStore = defineStore("grape", () => {
   const grapes = ref<Grape[]>([]);
@@ -22,7 +21,7 @@ export const useGrapeStore = defineStore("grape", () => {
     error.value = null;
 
     try {
-      grapes.value = await GrapeService.getAllGrapes();
+      grapes.value = await GrapeService.getAll();
     } catch (err) {
       error.value = "Ошибка при получении винограда. Попробуйте еще раз.";
       console.error(err);
@@ -36,7 +35,7 @@ export const useGrapeStore = defineStore("grape", () => {
     error.value = null;
 
     try {
-      selectedGrape.value = await GrapeService.getGrapeById(id);
+      selectedGrape.value = await GrapeService.getById(id);
     } catch (err) {
       error.value = "Ошибка при получении винограда. Попробуйте еще раз.";
       console.error(err);

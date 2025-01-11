@@ -37,7 +37,7 @@
 import { useToast } from "primevue/usetoast";
 import { reactive } from "vue";
 import { z } from "zod";
-import AuthService from "@/service/AuthService.ts";
+import { AuthService } from "w-list-api";
 import { handleError } from "@/helper/handleError.ts";
 
 const toast = useToast();

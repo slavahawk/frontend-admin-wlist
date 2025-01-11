@@ -1,57 +1,129 @@
 // src/stores/wineListItemStore.ts
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import WineListItemService from "@/service/WineListItemService";
 import {
   type CreateWineList,
   type WineListItemResponses,
-} from "@/types/wineListItem";
+  WineListItemService,
+} from "w-list-api";
 
 export const useWineListItemStore = defineStore("wineListItems", () => {
   const wineListItems = ref<WineListItemResponses>();
   const loading = ref(false);
-  const selectedWineListItemId = ref<number | null>(null);
 
+  // Utility function to set loading state
+  const setLoading = (state: boolean) => {
+    loading.value = state;
+  };
+
+  // Fetch all wine list items
   const fetchWineListItems = async (listId: number) => {
-    loading.value = true;
+    setLoading(true);
     try {
-      wineListItems.value = await WineListItemService.getWineListItems(listId);
+      wineListItems.value = await WineListItemService.getAll(listId);
     } catch (error) {
       console.error("Error fetching wine list items:", error);
     } finally {
-      loading.value = false;
+      setLoading(false);
     }
   };
 
+  // Fetch a wine list item by ID
   const fetchWineListItemById = async (listId: number, id: number) => {
-    loading.value = true;
+    setLoading(true);
     try {
-      const item = await WineListItemService.getWineListItemById(listId, id);
-      // handle the item as needed (e.g., set to state, show in dialog)
+      return await WineListItemService.getById(listId, id);
     } catch (error) {
       console.error("Error fetching wine list item by ID:", error);
     } finally {
-      loading.value = false;
+      setLoading(false);
     }
   };
 
+  // Create a new wine list item
   const createWineListItem = async (wineListItem: CreateWineList) => {
-    await WineListItemService.createWineListItem(wineListItem);
-    await fetchWineListItems(selectedWineListItemId.value); // Refresh the list after creation
+    setLoading(true);
+    try {
+      const data = await WineListItemService.create(wineListItem);
+      if (data) {
+        addWineListItem(data);
+        return data;
+      }
+    } catch (error) {
+      console.error("Error creating wine list item:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const deleteWineListItem = async (id: number) => {
-    await WineListItemService.deleteWineListItem(id);
-    await fetchWineListItems(selectedWineListItemId.value); // Refresh the list after deletion
+  // Add new item to the state
+  const addWineListItem = (item: any) => {
+    wineListItems.value.page.totalElements++;
+    wineListItems.value._embedded.rootWineListItemResponseList.unshift(item);
+  };
+
+  // Update an existing wine list item
+  const updateWineListItem = async ({ listId, itemId, prices }: any) => {
+    setLoading(true);
+    try {
+      const data = await WineListItemService.update(listId, itemId, prices);
+      if (data) {
+        const findIndex =
+          wineListItems.value._embedded.rootWineListItemResponseList.findIndex(
+            (w) => w.id === itemId,
+          );
+        if (findIndex > -1) {
+          wineListItems.value._embedded.rootWineListItemResponseList.splice(
+            findIndex,
+            1,
+            data,
+          );
+        }
+        return data;
+      }
+    } catch (error) {
+      console.error("Error updating wine list item:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Delete a wine list item
+  const deleteWineListItem = async (listId: number, itemId: number) => {
+    setLoading(true);
+    try {
+      await WineListItemService.delete(listId, itemId);
+      removeWineListItem(itemId);
+    } catch (error) {
+      console.error("Error deleting wine list item:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Remove item from the state
+  const removeWineListItem = (itemId: number) => {
+    const findIndex =
+      wineListItems.value._embedded.rootWineListItemResponseList.findIndex(
+        (w) => w.id === itemId,
+      );
+
+    if (findIndex > -1) {
+      wineListItems.value.page.totalElements--;
+      wineListItems.value._embedded.rootWineListItemResponseList.splice(
+        findIndex,
+        1,
+      );
+    }
   };
 
   return {
     wineListItems,
     loading,
-    selectedWineListItemId,
     fetchWineListItems,
     fetchWineListItemById,
     createWineListItem,
     deleteWineListItem,
+    updateWineListItem,
   };
 });

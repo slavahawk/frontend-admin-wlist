@@ -117,7 +117,7 @@ import { useAuthStore } from "@/stores/authStore.ts";
 import Logo from "@/assets/images/svg/Logo.vue";
 import { AppRoutes } from "@/router";
 import ForgotPasswordDialog from "@/components/ForgotPasswordDialog.vue";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/const/localstorage.ts";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "w-list-api";
 
 const authStore = useAuthStore();
 

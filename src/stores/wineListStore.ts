@@ -1,7 +1,11 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import WineListService from "@/service/WineListService"; // Путь к сервису управления списками вин
-import type { Request, WineList } from "@/types/wineList";
+import {
+  type CreateWineList,
+  type WineList,
+  WineListService,
+} from "w-list-api"; // Путь к сервису управления списками вин
+
 import { SELECT_LIST } from "@/const/localstorage.ts"; // Импортируем интерфейсы из types
 
 export const useWineListStore = defineStore("wineList", () => {
@@ -21,7 +25,7 @@ export const useWineListStore = defineStore("wineList", () => {
     error.value = null;
 
     try {
-      wineLists.value = await WineListService.getAllWineLists();
+      wineLists.value = await WineListService.getAll();
     } catch (err) {
       error.value = "Ошибка при получении списков вин. Попробуйте еще раз.";
       console.error(err);
@@ -41,7 +45,7 @@ export const useWineListStore = defineStore("wineList", () => {
     error.value = null;
 
     try {
-      wineList.value = await WineListService.getWineListById(id);
+      wineList.value = await WineListService.getById(id);
     } catch (err) {
       error.value = "Ошибка при получении списка вин. Попробуйте еще раз.";
       console.error(err);
@@ -51,15 +55,12 @@ export const useWineListStore = defineStore("wineList", () => {
   };
 
   // Функция для обновления списка вин
-  const updateWineList = async (id: number, wineListData: Request) => {
+  const updateWineList = async (id: number, wineListData: CreateWineList) => {
     loading.value = true;
     error.value = null;
 
     try {
-      const updatedWineList = await WineListService.updateWineList(
-        id,
-        wineListData,
-      );
+      const updatedWineList = await WineListService.update(id, wineListData);
       const index = wineLists.value.findIndex((list) => list.id === id);
       if (index !== -1) {
         wineLists.value[index] = updatedWineList;
@@ -78,7 +79,7 @@ export const useWineListStore = defineStore("wineList", () => {
     error.value = null;
 
     try {
-      await WineListService.deleteWineList(id);
+      await WineListService.delete(id);
       wineLists.value = wineLists.value.filter((list) => list.id !== id);
     } catch (err) {
       error.value = "Ошибка при удалении списка вин. Попробуйте еще раз.";
@@ -94,7 +95,7 @@ export const useWineListStore = defineStore("wineList", () => {
     error.value = null;
 
     try {
-      const newWineList = await WineListService.createWineList(wineListData);
+      const newWineList = await WineListService.create(wineListData);
       wineLists.value.push(newWineList);
       return newWineList;
     } catch (err) {

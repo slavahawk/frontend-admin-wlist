@@ -61,16 +61,20 @@ import { reactive } from "vue";
 import { z } from "zod";
 import { handleError } from "@/helper/handleError.ts";
 import { useToast } from "primevue/usetoast";
-import type { Prices } from "@/types/wineListItem.ts";
+import type { Prices } from "w-list-api";
 const toast = useToast();
+
+const props = defineProps<{
+  prices?: Prices;
+}>();
 
 const emit = defineEmits<{
   (e: "save", prices: Prices): void;
 }>();
 
 const initialValues = reactive<Prices>({
-  pricePerBottle: 0,
-  pricePerGlass: 0,
+  pricePerBottle: props.prices?.pricePerBottle ?? 0,
+  pricePerGlass: props.prices?.pricePerGlass ?? 0,
 });
 
 // Определите схему Zod для валидации формы с новыми полями

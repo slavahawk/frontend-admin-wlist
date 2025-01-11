@@ -1,8 +1,7 @@
 // src/stores/regionStore.ts
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import RegionService from "@/service/RegionService";
-import type { Region } from "@/types/region";
+import { RegionService, type Region } from "w-list-api";
 
 export const useRegionStore = defineStore("region", () => {
   const regions = ref<Region[]>([]);
@@ -22,7 +21,7 @@ export const useRegionStore = defineStore("region", () => {
     error.value = null;
 
     try {
-      regions.value = await RegionService.getAllRegions();
+      regions.value = await RegionService.getAll();
     } catch (err) {
       error.value = "Ошибка при получении регионов. Попробуйте еще раз.";
       console.error(err);
@@ -36,7 +35,7 @@ export const useRegionStore = defineStore("region", () => {
     error.value = null;
 
     try {
-      selectedRegion.value = await RegionService.getRegionById(id);
+      selectedRegion.value = await RegionService.getById(id);
     } catch (err) {
       error.value = "Ошибка при получении региона. Попробуйте еще раз.";
       console.error(err);
