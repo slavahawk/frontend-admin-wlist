@@ -1,15 +1,18 @@
 // src/stores/wineListItemStore.ts
-import { defineStore } from "pinia";
+import { defineStore, storeToRefs } from "pinia";
 import { ref } from "vue";
 import {
   type CreateWineList,
+  roleWineListItem,
   type WineListItemResponses,
   WineListItemService,
 } from "w-list-api";
+import { useAuthStore } from "@/stores/authStore.ts";
 
 export const useWineListItemStore = defineStore("wineListItems", () => {
   const wineListItems = ref<WineListItemResponses>();
   const loading = ref(false);
+  const { user } = storeToRefs(useAuthStore());
 
   // Utility function to set loading state
   const setLoading = (state: boolean) => {
@@ -59,7 +62,9 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
   // Add new item to the state
   const addWineListItem = (item: any) => {
     wineListItems.value.page.totalElements++;
-    wineListItems.value._embedded.rootWineListItemResponseList.unshift(item);
+    wineListItems.value._embedded[roleWineListItem(user.value?.role)].unshift(
+      item,
+    );
   };
 
   // Update an existing wine list item
@@ -68,16 +73,13 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
     try {
       const data = await WineListItemService.update(listId, itemId, prices);
       if (data) {
-        const findIndex =
-          wineListItems.value._embedded.rootWineListItemResponseList.findIndex(
-            (w) => w.id === itemId,
-          );
+        const findIndex = wineListItems.value._embedded[
+          roleWineListItem(user.value?.role)
+        ].findIndex((w) => w.id === itemId);
         if (findIndex > -1) {
-          wineListItems.value._embedded.rootWineListItemResponseList.splice(
-            findIndex,
-            1,
-            data,
-          );
+          wineListItems.value._embedded[
+            roleWineListItem(user.value?.role)
+          ].splice(findIndex, 1, data);
         }
         return data;
       }
@@ -103,14 +105,13 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
 
   // Remove item from the state
   const removeWineListItem = (itemId: number) => {
-    const findIndex =
-      wineListItems.value._embedded.rootWineListItemResponseList.findIndex(
-        (w) => w.id === itemId,
-      );
+    const findIndex = wineListItems.value._embedded[
+      roleWineListItem(user.value?.role)
+    ].findIndex((w) => w.id === itemId);
 
     if (findIndex > -1) {
       wineListItems.value.page.totalElements--;
-      wineListItems.value._embedded.rootWineListItemResponseList.splice(
+      wineListItems.value._embedded[roleWineListItem(user.value?.role)].splice(
         findIndex,
         1,
       );

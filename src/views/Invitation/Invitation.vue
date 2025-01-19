@@ -3,10 +3,8 @@
     <DataTable :loading="isLoad" :value="invitations">
       <template #header>
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <span class="text-xl font-bold"
-              >Приглашенные сомелье {{ invitations?.length }}</span
-            >
+          <div class="flex items-center gap-2">
+            <h4>Приглашенные сомелье {{ invitations?.length }}</h4>
             <Button
               class="ml-4"
               icon="pi pi-plus"
@@ -121,7 +119,7 @@ const resolver = async ({ values }) => {
 const handleResetSubmit = async ({ valid, states }) => {
   if (valid) {
     try {
-      const data = await InvitationService.send(states.email.value);
+      const data = await InvitationService.send({ email: states.email.value });
       console.log(data);
     } catch (e) {
       handleError(e, toast);

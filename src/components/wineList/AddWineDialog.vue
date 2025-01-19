@@ -66,19 +66,19 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { defineProps, defineEmits } from "vue";
 import { useWineStore } from "@/stores/wineStore.ts";
 import WineDetailCard from "./WineDetailCard.vue"; // Импортируйте ваш новый компонент
-import type { Wine } from "w-list-api";
+import { roleWineListItem, type Wine } from "w-list-api";
 import FormSelectPrice from "@/components/form/FormSelectPrice.vue";
 import type { Prices } from "w-list-api";
 import { useWineListItemStore } from "@/stores/wineListItemStore.ts";
 import { storeToRefs } from "pinia";
 import { useWineListStore } from "@/stores/wineListStore.ts";
+import { useAuthStore } from "@/stores/authStore.ts";
 
 const { createWineListItem } = useWineListItemStore();
 
-const { selectedWineListId } = storeToRefs(useWineListStore());
+const { activeWineList } = storeToRefs(useWineListStore());
 
 const props = defineProps<{
   show: boolean;
@@ -101,11 +101,12 @@ const findWine = ref<string | Wine>("");
 const items = ref([]);
 const currentStep = ref("1");
 const { fetchWinesSearch } = useWineStore();
+const { user } = storeToRefs(useAuthStore());
 
 const search = async (event: { query: string }) => {
   const data = await fetchWinesSearch({ name: event.query, page: 0, size: 20 });
   if (data) {
-    items.value = data._embedded.rootWineResponseList;
+    items.value = data._embedded[roleWineListItem(user.value?.role)];
   }
 };
 
@@ -122,7 +123,7 @@ const saveWine = async ({ pricePerBottle, pricePerGlass }: Prices) => {
     pricePerBottle,
     pricePerGlass,
     wineId: findWine.value.id,
-    wineListId: selectedWineListId.value,
+    wineListId: activeWineList.value?.id,
   });
 
   if (data) {

@@ -1,7 +1,7 @@
 // src/stores/regionStore.ts
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import { RegionService, type Region } from "w-list-api";
+import { type Region, RegionService } from "w-list-api";
 
 export const useRegionStore = defineStore("region", () => {
   const regions = ref<Region[]>([]);
@@ -15,6 +15,9 @@ export const useRegionStore = defineStore("region", () => {
       label: region.name,
     }));
   });
+
+  const getRegionNameById = (regionId: number): string | null =>
+    regions.value.find((c: Region) => c.id === regionId)?.name ?? null;
 
   const fetchRegions = async () => {
     loading.value = true;
@@ -57,5 +60,6 @@ export const useRegionStore = defineStore("region", () => {
     fetchRegions,
     fetchRegionById,
     clearSelectedRegion,
+    getRegionNameById,
   };
 });

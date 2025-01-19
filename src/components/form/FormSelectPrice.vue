@@ -32,13 +32,13 @@
       <label
         for="pricePerGlass"
         class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2"
-        >Цена за стакан</label
+        >Цена за бокал</label
       >
       <InputNumber
         id="pricePerGlass"
         v-model="initialValues.pricePerGlass"
         mode="decimal"
-        placeholder="Введите цену за стакан"
+        placeholder="Введите цену за бокал"
         :min="0"
       />
       <Message
@@ -73,8 +73,8 @@ const emit = defineEmits<{
 }>();
 
 const initialValues = reactive<Prices>({
-  pricePerBottle: props.prices?.pricePerBottle ?? 0,
-  pricePerGlass: props.prices?.pricePerGlass ?? 0,
+  pricePerBottle: props.prices?.pricePerBottle,
+  pricePerGlass: props.prices?.pricePerGlass,
 });
 
 // Определите схему Zod для валидации формы с новыми полями
@@ -106,7 +106,7 @@ const resolver = async ({ values }) => {
 };
 
 // Handle form submission for prices
-const handlePricesSubmit = async ({ valid, states }) => {
+const handlePricesSubmit = async ({ valid }) => {
   if (valid) {
     try {
       if (valid) {

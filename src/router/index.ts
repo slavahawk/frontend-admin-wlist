@@ -27,15 +27,15 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-      path: RoutePath.List,
-      name: AppRoutes.LIST,
-      component: () => import("@/views/List.vue"),
-      meta: { requiresAuth: true },
-    },
-    {
       path: "/",
       component: AppLayout,
       children: [
+        {
+          path: RoutePath.List,
+          name: AppRoutes.LIST,
+          component: () => import("@/views/List.vue"),
+          meta: { requiresAuth: true },
+        },
         {
           path: RoutePath.Invitation,
           name: AppRoutes.INVITATION,

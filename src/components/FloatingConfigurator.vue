@@ -28,7 +28,9 @@ const { toggleDarkMode, isDarkTheme } = useLayout();
         type="button"
         rounded
       />
+
       <AppConfigurator />
     </div>
+    <slot />
   </div>
 </template>

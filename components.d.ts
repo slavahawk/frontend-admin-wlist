@@ -137,7 +137,7 @@ declare module 'vue' {
     WineDetailsDialog: typeof import('./src/components/wineListItem/WineDetailsDialog.vue')['default']
     WineDialog: typeof import('./src/components/wine/WineDialog.vue')['default']
     WineEditPrice: typeof import('./src/components/wineListItem/WineEditPrice.vue')['default']
-    WineListCard: typeof import('./src/components/wineList/WineListCard.vue')['default']
+    WinePrice: typeof import('./src/components/wineListItem/WinePrice.vue')['default']
     WineSearchDialog: typeof import('./src/components/wine/WineSearchDialog.vue')['default']
     WineTable: typeof import('./src/components/wine/WineTable.vue')['default']
   }

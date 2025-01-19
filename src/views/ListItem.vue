@@ -1,49 +1,65 @@
 <template>
-  <div>
+  <div class="card">
     <DataTable
-      :value="wineListItems?._embedded?.rootWineListItemResponseList"
+      :value="wineListItems?._embedded[roleWineListItem(user.role)]"
       :loading="loading"
       dataKey="id"
       selectionMode="single"
     >
       <template #header>
-        <div class="flex gap-2 items-center">
-          <h1 class="text-2xl">
-            Список вин {{ wineListItems?.page.totalElements }}
-          </h1>
-          <Button
-            icon="pi pi-plus"
-            variant="text"
-            @click="showCreateDialog = true"
-          />
+        <div class="flex justify-between items-center">
+          <div class="flex gap-2 items-center">
+            <h4>Список вин {{ wineListItems?.page.totalElements }}</h4>
+            <Button
+              icon="pi pi-plus"
+              variant="text"
+              @click="showCreateDialog = true"
+            />
+          </div>
+          <div class="flex gap-2 items-center">
+            <span>Винная карта: {{ activeWineList?.name }}</span>
+            <Button
+              icon="pi pi-pencil"
+              variant="text"
+              @click="$router.push({ name: AppRoutes.LIST })"
+            />
+          </div>
         </div>
       </template>
-      <Column header="Вино">
+      <Column>
         <template #body="{ data }">
-          {{ data.wine.name }}
+          {{ vintage(data.wine.vintage) }}
         </template>
       </Column>
-      <Column header="Обложка">
+      <Column>
         <template #body="{ data }">
-          <Avatar
-            :image="data.wine.tinyImagePath"
-            alt="Wine Image"
-            class="wine-image"
+          <div @click="openDetailDialog(data)">
+            <div>{{ data.wine.name }}</div>
+            <div style="color: var(--primary-color)">
+              {{ getCountryNameById(data.wine.countryId) }},
+              {{ getRegionNameById(data.wine.regionId) }}
+            </div>
+          </div>
+        </template>
+      </Column>
+      <Column field="pricePerGlass" sortable class="w-[300px]">
+        <template #body="{ data }">
+          <WinePrice
+            :price-per-glass="data.pricePerGlass"
+            :price-per-bottle="data.pricePerBottle"
+            :bottle-volume="data.wine.bottleVolume"
           />
         </template>
       </Column>
-      <Column field="pricePerGlass" header="Цена за бокал" sortable> </Column>
-      <Column field="pricePerBottle" header="Цена за бутылку" sortable>
-      </Column>
 
-      <Column header="Действия">
+      <Column>
         <template #body="{ data }">
           <div class="flex">
             <Button
               icon="pi pi-eye"
               variant="text"
               v-tooltip.bottom="`Посмотреть вино`"
-              @click="openDetailDialog(data.wine)"
+              @click="openDetailDialog(data)"
             />
             <Button
               icon="pi pi-pencil"
@@ -64,12 +80,20 @@
     </DataTable>
 
     <AddWineDialog v-model:show="showCreateDialog" />
-    <WineEditPrice
-      v-model:show="showEditDialog"
-      :wine="selectedWine"
-      @save="updateWine"
-    />
-    <WineDetailsDialog v-model:show="showDetailDialog" :wine="selectedWine" />
+
+    <div v-if="selectedWine">
+      <WineEditPrice
+        v-model:show="showEditDialog"
+        :wine="selectedWine"
+        @save="updateWine"
+      />
+      <WineDetailsDialog
+        v-model:show="showDetailDialog"
+        :wine="selectedWine.wine"
+        :price-per-bottle="selectedWine.pricePerBottle"
+        :price-per-glass="selectedWine.pricePerGlass"
+      />
+    </div>
   </div>
 </template>
 
@@ -79,12 +103,18 @@ import { useWineListItemStore } from "@/stores/wineListItemStore";
 import { storeToRefs } from "pinia";
 import AddWineDialog from "@/components/wineList/AddWineDialog.vue";
 import { useWineListStore } from "@/stores/wineListStore.ts";
-import Avatar from "primevue/avatar";
 import WineDetailsDialog from "@/components/wineListItem/WineDetailsDialog.vue";
-import type { Wine } from "w-list-api";
+import { type WineListItem, roleWineListItem } from "w-list-api";
 import { useConfirm } from "primevue";
 import { useToast } from "primevue/usetoast";
 import WineEditPrice from "@/components/wineListItem/WineEditPrice.vue";
+import { vintage } from "@/utils/vintage.ts";
+import { useCountryStore } from "@/stores/countryStore.ts";
+import { useRegionStore } from "@/stores/regionStore.ts";
+import WinePrice from "@/components/wineListItem/WinePrice.vue";
+import { AppRoutes } from "@/router";
+import { useAuthStore } from "@/stores/authStore.ts";
+const { user } = storeToRefs(useAuthStore());
 
 const confirm = useConfirm();
 const toast = useToast();
@@ -92,26 +122,28 @@ const toast = useToast();
 const { fetchWineListItems, deleteWineListItem, updateWineListItem } =
   useWineListItemStore();
 const { wineListItems, loading } = storeToRefs(useWineListItemStore());
-const { selectedWineListId } = storeToRefs(useWineListStore());
+const { activeWineList } = storeToRefs(useWineListStore());
+const { getCountryNameById } = useCountryStore();
+const { getRegionNameById } = useRegionStore();
 
-if (selectedWineListId.value) fetchWineListItems(selectedWineListId.value);
+if (activeWineList.value) fetchWineListItems(activeWineList.value.id);
 
 const showCreateDialog = ref(false);
 const showEditDialog = ref(false);
 const showDetailDialog = ref(false);
-const selectedWine = ref<Wine | null>(null);
+const selectedWine = ref<WineListItem>();
 
-const openDetailDialog = (wine: Wine) => {
+const openDetailDialog = (wine: WineListItem) => {
   selectedWine.value = wine;
   showDetailDialog.value = true;
 };
 
-const editDialog = (wine: Wine) => {
+const editDialog = (wine: WineListItem) => {
   selectedWine.value = wine;
   showEditDialog.value = true;
 };
 
-const deleteWine = (wine: any) => {
+const deleteWine = (wine: WineListItem) => {
   confirm.require({
     message: "Вы уверены, что хотите удалить вино?",
     header: "Удалить вино",
@@ -127,7 +159,7 @@ const deleteWine = (wine: any) => {
       severity: "danger",
     },
     accept: async () => {
-      await deleteWineListItem(selectedWineListId.value, wine.id);
+      await deleteWineListItem(activeWineList.value.id, wine.id);
     },
     reject: () => {
       toast.add({
@@ -144,7 +176,7 @@ const updateWine = async ({ itemId, pricePerBottle, pricePerGlass }: any) => {
   const data = await updateWineListItem({
     itemId,
     prices: { pricePerBottle, pricePerGlass },
-    listId: selectedWineListId.value,
+    listId: activeWineList.value.id,
   });
 
   if (data) {

@@ -6,18 +6,34 @@ import {
   WineListService,
 } from "w-list-api"; // Путь к сервису управления списками вин
 
-import { SELECT_LIST } from "@/const/localstorage.ts"; // Импортируем интерфейсы из types
-
 export const useWineListStore = defineStore("wineList", () => {
   const wineLists = ref<WineList[]>([]);
   const wineList = ref<WineList | null>(null);
-  const selectedWineListId = ref<number | null>(null);
   const loading = ref(false);
   const error = ref<string | null>(null);
 
-  if (localStorage.getItem(SELECT_LIST)) {
-    selectedWineListId.value = Number(localStorage.getItem(SELECT_LIST));
-  }
+  const setActiveList = async (id: number) => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const data = await WineListService.setActiveList(id);
+      const index = wineLists.value.findIndex((w: WineList) => {
+        console.log(w.id, data);
+        return w.id === data.id;
+      });
+      console.log(index);
+      if (index > -1) {
+        wineLists.value.splice(index, 1, data);
+      }
+      return data;
+    } catch (err) {
+      error.value = "Ошибка";
+      console.error(err);
+    } finally {
+      loading.value = false;
+    }
+  };
 
   // Функция для получения всех списков вин
   const fetchWineLists = async () => {
@@ -34,10 +50,9 @@ export const useWineListStore = defineStore("wineList", () => {
     }
   };
 
-  const setWineListId = (id: number) => {
-    selectedWineListId.value = id;
-    localStorage.setItem(SELECT_LIST, String(id));
-  };
+  const activeWineList = computed(() =>
+    wineLists.value.find((w: WineList) => w.isActive),
+  );
 
   // Функция для получения списка вин по ID
   const fetchWineListById = async (id: number) => {
@@ -111,7 +126,7 @@ export const useWineListStore = defineStore("wineList", () => {
     wineList.value = null;
   };
 
-  const isSelectedWineList = computed(() => !!selectedWineListId.value);
+  const isSelectedWineList = computed(() => !!activeWineList.value);
 
   return {
     wineLists,
@@ -124,8 +139,8 @@ export const useWineListStore = defineStore("wineList", () => {
     deleteWineList,
     createWineList,
     clearSelectedWineList,
-    setWineListId,
-    selectedWineListId,
     isSelectedWineList,
+    setActiveList,
+    activeWineList,
   };
 });

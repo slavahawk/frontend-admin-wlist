@@ -3,70 +3,78 @@ import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import { useRouter } from "vue-router";
 import { AppRoutes } from "@/router";
-import { AuthService, ACCESS_TOKEN, REFRESH_TOKEN } from "w-list-api";
+import { ACCESS_TOKEN, AuthService, type Me, REFRESH_TOKEN } from "w-list-api";
 import { handleError } from "@/helper/handleError.ts";
 import { checkData } from "@/helper/checkData.ts";
+import type { RegistrationRequest } from "w-list-api/src/services/auth/types.ts";
 
 export const useAuthStore = defineStore("auth", () => {
-  const user = ref<any | null>(null);
+  const user = ref<Me | null>(null);
   const isLoad = ref(false);
   const isAuthenticated = ref(false);
   const toast = useToast();
   const router = useRouter();
 
-  // Load authentication state from localStorage on mount
-  const refreshToken = localStorage.getItem(REFRESH_TOKEN);
-  if (refreshToken) {
-    isAuthenticated.value = true;
-  }
+  const initAuth = () => {
+    isAuthenticated.value = !!localStorage.getItem(REFRESH_TOKEN);
+  };
+
+  const showToast = (severity: any, summary: string) => {
+    toast.add({ severity, summary, life: 3000 });
+  };
+
+  const handleLoadState = (loading: boolean) => {
+    isLoad.value = loading;
+  };
 
   const login = async (email: string, password: string) => {
-    isLoad.value = true;
+    handleLoadState(true);
     try {
-      const data = await AuthService.login({ email, password });
-
+      const data = await AuthService.loginCustomer({ email, password });
       checkData(data, "User data not found in response");
 
       isAuthenticated.value = true;
       localStorage.setItem(ACCESS_TOKEN, data.details.accessToken);
       localStorage.setItem(REFRESH_TOKEN, data.details.refreshToken);
-      toast.add({
-        severity: "success",
-        summary: "Успешный вход",
-        life: 3000,
-      });
+      showToast("success", "Успешный вход");
       await router.push({ name: AppRoutes.LIST });
     } catch (error) {
       handleError(error, toast);
     } finally {
-      isLoad.value = false;
+      handleLoadState(false);
     }
   };
 
-  const register = async (body: {
-    email: string;
-    password: string;
-    shopName: string;
-  }) => {
-    isLoad.value = true;
+  const getMe = async () => {
+    handleLoadState(true);
+    try {
+      const data = await AuthService.me();
+      checkData(data, "User data not found in response");
+      user.value = data;
+      return data;
+    } catch (error) {
+      handleError(error, toast);
+    } finally {
+      handleLoadState(false);
+    }
+  };
+
+  const register = async (body: RegistrationRequest) => {
+    handleLoadState(true);
     try {
       const data = await AuthService.register(body);
       checkData(data, "User data not found in response");
-      toast.add({
-        severity: "success",
-        summary: "Регистрация успешна",
-        life: 3000,
-      });
+      showToast("success", "Регистрация успешна");
       await login(body.email, body.password);
     } catch (error) {
       handleError(error, toast);
     } finally {
-      isLoad.value = false;
+      handleLoadState(false);
     }
   };
 
   const logout = async () => {
-    isLoad.value = true;
+    handleLoadState(true);
     try {
       await AuthService.logout({
         refreshToken: localStorage.getItem(REFRESH_TOKEN),
@@ -74,22 +82,19 @@ export const useAuthStore = defineStore("auth", () => {
       isAuthenticated.value = false;
       localStorage.removeItem(REFRESH_TOKEN);
       localStorage.removeItem(ACCESS_TOKEN);
-      toast.add({
-        severity: "success",
-        summary: "Успешный выход",
-        life: 3000,
-      });
+      showToast("success", "Успешный выход");
       await router.push({ name: AppRoutes.LOGIN });
     } catch (error) {
       handleError(error, toast);
     } finally {
-      isLoad.value = false;
+      handleLoadState(false);
     }
   };
 
-  const checkAuth = () => {
-    return isAuthenticated.value;
-  };
+  const checkAuth = () => isAuthenticated.value;
+
+  // Инициализация состояния аутентификации при создании стора
+  initAuth();
 
   return {
     user,
@@ -99,5 +104,6 @@ export const useAuthStore = defineStore("auth", () => {
     register,
     logout,
     checkAuth,
+    getMe,
   };
 });

@@ -4,20 +4,43 @@ import { useRegionStore } from "@/stores/regionStore.ts";
 import { useCountryStore } from "@/stores/countryStore.ts";
 import { useGrapeStore } from "@/stores/grapeStore.ts";
 import { useWineStore } from "@/stores/wineStore.ts";
+import { useWineListStore } from "@/stores/wineListStore.ts";
+import { ref } from "vue";
+import { useAuthStore } from "@/stores/authStore.ts";
 
 const { fetchRegions } = useRegionStore();
 const { fetchCountries } = useCountryStore();
 const { fetchGrapes } = useGrapeStore();
 const { fetchWinesFilter } = useWineStore();
+const { fetchWineLists } = useWineListStore();
+const { getMe } = useAuthStore();
 
-fetchRegions();
-fetchCountries();
-fetchGrapes();
-fetchWinesFilter();
+const isLoad = ref(true);
+Promise.allSettled([
+  getMe(),
+  fetchRegions(),
+  fetchCountries(),
+  fetchGrapes(),
+  fetchWinesFilter(),
+  fetchWineLists(),
+]).finally(() => (isLoad.value = false));
 </script>
 
 <template>
-  <div class="layout-wrapper">
+  <div
+    v-if="isLoad"
+    class="layout-wrapper relative flex justify-center items-center"
+  >
+    <ProgressSpinner
+      class="spinner"
+      strokeWidth="8"
+      fill="transparent"
+      animationDuration=".5s"
+      aria-label="Custom ProgressSpinner"
+    />
+  </div>
+
+  <div v-else class="layout-wrapper">
     <app-topbar></app-topbar>
     <div class="layout-main-container">
       <div class="layout-main">
@@ -28,3 +51,10 @@ fetchWinesFilter();
   </div>
   <Toast />
 </template>
+
+<style lang="scss">
+.spinner {
+  width: 50px;
+  height: 50px;
+}
+</style>

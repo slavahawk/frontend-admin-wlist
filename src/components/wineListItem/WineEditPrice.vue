@@ -8,7 +8,7 @@
     <FormSelectPrice
       :prices="{
         pricePerBottle: wine?.pricePerBottle,
-        pricePerGlass: wine?.pricePerBottle,
+        pricePerGlass: wine?.pricePerGlass,
       }"
       @save="saveWine"
     >
@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps } from "vue";
+import { computed } from "vue";
 import type { Prices, WineListItem } from "w-list-api";
 import FormSelectPrice from "@/components/form/FormSelectPrice.vue";
 

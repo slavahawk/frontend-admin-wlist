@@ -1,68 +1,73 @@
 <template>
-  <Card>
-    <template #title>
-      <h3>{{ wine.name }}</h3>
-    </template>
-    <template #content>
-      <div class="wine-detail">
-        <Avatar
-          :image="wine.mediumImagePath"
-          alt="Wine Image"
-          class="wine-image"
-        />
-        <div class="detail-content">
-          <p><strong>Категория:</strong> {{ wine.category }}</p>
-          <p><strong>Цвет:</strong> {{ wine.colour }}</p>
-          <p><strong>Объем:</strong> {{ wine.bottleVolume }} л</p>
-          <p>
-            <strong>Алкогольное содержание:</strong>
-            {{ wine.alcoholByVolume }} %
-          </p>
-          <p><strong>Уровень сахара:</strong> {{ wine.sugarType }}</p>
-          <p><strong>Год урожая:</strong> {{ wine.vintage }}</p>
-          <p><strong>Интересные факты:</strong> {{ wine.interestingFacts }}</p>
-          <p>
-            <strong>Органолептические характеристики:</strong>
-            {{ wine.organoleptic }}
-          </p>
-        </div>
-      </div>
-    </template>
-  </Card>
+  <div class="wine-detail" v-if="wine">
+    <img :src="wine.originalImagePath" alt="Wine Image" class="wine-image" />
+    <div class="wine-info">
+      <h3 class="text-xl mb-4">{{ wine.name }}</h3>
+      <p class="mb-4" style="color: var(--primary-color)">
+        {{ getCountryNameById(wine.countryId) }},
+        {{ getRegionNameById(wine.regionId) }}
+      </p>
+      <p class="mb-4">{{ wine.interestingFacts }}</p>
+
+      <slot />
+      <p class="mb-4">
+        <strong>Год урожая:</strong> {{ vintage(wine.vintage) }}
+      </p>
+
+      <p class="mb-4">
+        <strong>Категория:</strong>
+        {{ getCategoryLabelByValue(wine.category) }}
+      </p>
+      <p class="mb-4">
+        <strong>Цвет:</strong> {{ getColourLabelByValue(wine.colour) }}
+      </p>
+      <p class="mb-4">
+        <strong>Алкогольное содержание:</strong>
+        {{ wine.alcoholByVolume }} %
+      </p>
+      <p class="mb-4">
+        <strong>Уровень сахара:</strong>
+        {{ getSugarTypeLabelByValue(wine.sugarType) }}
+      </p>
+      <p>
+        <strong>Органолептические характеристики:</strong>
+        {{ wine.organoleptic }}
+      </p>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from "vue";
-import { type Wine } from "w-list-api"; // Импортируйте тип Wine, если это необходимо
-import Card from "primevue/card";
-import Avatar from "primevue/avatar";
+import {
+  getCategoryLabelByValue,
+  getColourLabelByValue,
+  getSugarTypeLabelByValue,
+  type Wine,
+} from "w-list-api"; // Импортируйте тип Wine, если это необходимо
+import { vintage } from "@/utils/vintage.ts";
+import { useCountryStore } from "@/stores/countryStore.ts";
+import { useRegionStore } from "@/stores/regionStore.ts";
 
-const props = defineProps<{
-  wine: Wine; // Определяем, что мы получаем объект типа Wine
+const { getCountryNameById } = useCountryStore();
+const { getRegionNameById } = useRegionStore();
+
+defineProps<{
+  wine: Wine;
 }>();
 </script>
 
 <style scoped>
 .wine-detail {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  position: relative;
 }
 
 .wine-image {
-  max-width: 300px;
-  height: auto;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1rem;
-}
-
-.detail-content {
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  padding: 1rem;
-  width: 100%;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  margin: 0 auto;
+  max-height: calc(100vh - 200px);
 }
 </style>

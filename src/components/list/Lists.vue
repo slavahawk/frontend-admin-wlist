@@ -1,124 +1,121 @@
 <template>
-  <div class="wine-list-container">
-    <div class="mb-4 flex gap-4 items-center">
-      <h2 class="text-2xl">Список винных карт</h2>
-
-      <Button
-        class="p-button-primary"
-        variant="text"
-        icon="pi pi-plus"
-        @click="showCreateWineListDialog"
-      />
-    </div>
-
-    <div v-if="!loading && wineLists.length === 0" class="empty-state">
-      <p>Список винных карт пуст. Добавьте новую винную карту.</p>
-    </div>
-
-    <div v-if="loading" class="wine-list-grid mt-12">
-      <Skeleton
-        width="320px"
-        height="160px"
-        borderRadius="16px"
-        v-for="item in items"
-      />
-    </div>
-
-    <div class="wine-list-grid mt-12" v-else>
-      <WineListCard
-        class="w-[320px] h-[160px]"
-        v-for="w in wineLists"
-        :key="w.id"
-        :id="w.id"
-        :name="w.name"
-        :createdAt="w.createdAt"
-        :winesCount="w.itemCount"
-        :isActive="w.id === selectedWineListId"
-        @select="setActiveWineListId"
-        @edit="editWineList(w)"
-        @delete="deleteWineList"
-      />
-    </div>
-    <div v-if="wineLists.length" class="mt-4">
-      <Button
-        label="Дальше"
-        @click="$router.push({ name: AppRoutes.LIST_ITEM })"
-      />
-    </div>
-
-    <!-- Create Wine List Dialog -->
-    <Dialog v-model:visible="createDialogVisible" header="Создать винную карту">
-      <div>
-        <InputText
-          v-model="newWineListName"
-          placeholder="Название винной карты"
-          aria-label="Название винной карты"
-          style="width: 100%"
-        />
-      </div>
-      <div class="flex gap-2 justify-between mt-4">
-        <Button label="Сохранить" icon="pi pi-check" @click="createWineList" />
+  <DataTable
+    v-model:selection="selectList"
+    :value="wineLists"
+    :loading="loading"
+    dataKey="id"
+  >
+    <template #header>
+      <div class="flex items-center gap-2">
+        <h4>Список винных карт {{ wineLists.length }}</h4>
         <Button
-          label="Отмена"
-          icon="pi pi-times"
-          @click="() => (createDialogVisible = false)"
-          class="p-button-text"
+          class="p-button-primary"
+          variant="text"
+          icon="pi pi-plus"
+          @click="showCreateWineListDialog"
         />
       </div>
-    </Dialog>
-
-    <!-- Edit Wine List Dialog -->
-    <Dialog
-      v-model:visible="editDialogVisible"
-      header="Редактировать винную карту"
-    >
-      <div>
-        <InputText
-          v-model="editWineListName"
-          placeholder="Название винной карты"
-          aria-label="Название винной карты"
-          style="width: 100%"
-        />
-      </div>
-      <div class="flex gap-2 justify-between mt-4">
-        <Button label="Сохранить" icon="pi pi-check" @click="updateWineList" />
+    </template>
+    <Column selectionMode="single" headerStyle="width: 3rem"></Column>
+    <Column field="id" header="ID" />
+    <Column field="name" header="Название" />
+    <Column field="itemCount" header="Количество вин" />
+    <Column>
+      <template #body="{ data }">
         <Button
-          label="Отмена"
-          icon="pi pi-times"
-          @click="() => (editDialogVisible = false)"
-          class="p-button-text"
+          icon="pi pi-pencil"
+          variant="text"
+          @click="editWineList(data)"
+          class="p-button-warning"
         />
-      </div>
-    </Dialog>
-  </div>
+        <Button
+          icon="pi pi-trash"
+          variant="text"
+          @click="deleteWineList(data.id)"
+          class="p-button-danger"
+        />
+      </template>
+    </Column>
+  </DataTable>
+  <!-- Create Wine List Dialog -->
+  <Dialog
+    v-model:visible="createDialogVisible"
+    modal
+    header="Создать винную карту"
+  >
+    <div>
+      <InputText
+        v-model="newWineListName"
+        placeholder="Название винной карты"
+        aria-label="Название винной карты"
+        style="width: 100%"
+      />
+    </div>
+    <div class="flex gap-2 justify-between mt-4">
+      <Button label="Сохранить" icon="pi pi-check" @click="createWineList" />
+      <Button
+        label="Отмена"
+        icon="pi pi-times"
+        @click="() => (createDialogVisible = false)"
+        class="p-button-text"
+      />
+    </div>
+  </Dialog>
+
+  <!-- Edit Wine List Dialog -->
+  <Dialog
+    v-model:visible="editDialogVisible"
+    header="Редактировать винную карту"
+    modal
+  >
+    <div>
+      <InputText
+        v-model="editWineListName"
+        placeholder="Название винной карты"
+        aria-label="Название винной карты"
+        style="width: 100%"
+      />
+    </div>
+    <div class="flex gap-2 justify-between mt-4">
+      <Button label="Сохранить" icon="pi pi-check" @click="updateWineList" />
+      <Button
+        label="Отмена"
+        icon="pi pi-times"
+        @click="() => (editDialogVisible = false)"
+        class="p-button-text"
+      />
+    </div>
+  </Dialog>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { ref, watch } from "vue";
 import { useWineListStore } from "@/stores/wineListStore";
 import { storeToRefs } from "pinia";
-import WineListCard from "@/components/wineList/WineListCard.vue";
-import { AppRoutes } from "@/router";
 
 const {
-  fetchWineLists,
   createWineList: create,
   updateWineList: update,
   deleteWineList: deleteWineL,
-  setWineListId,
+  setActiveList,
 } = useWineListStore();
 
-const { wineLists, loading, selectedWineListId } =
-  storeToRefs(useWineListStore());
+const { wineLists, loading, activeWineList } = storeToRefs(useWineListStore());
 
 const createDialogVisible = ref<boolean>(false);
 const editDialogVisible = ref<boolean>(false);
 const newWineListName = ref<string>("");
 const editWineListName = ref<string>("");
 const currentEditingWineListId = ref<number | null>(null);
+const selectList = ref();
 
-// Fetch wine lists on component mount
-fetchWineLists();
+if (activeWineList.value?.id) {
+  selectList.value = activeWineList.value;
+}
+
+watch(selectList, (newList) => {
+  setActiveList(newList.id);
+});
 
 const showCreateWineListDialog = () => {
   newWineListName.value = ""; // Reset the new list name
@@ -131,10 +128,6 @@ const createWineList = async () => {
     newWineListName.value = "";
     createDialogVisible.value = false;
   }
-};
-
-const setActiveWineListId = (id: number) => {
-  setWineListId(id);
 };
 
 // Show the edit dialog with the current wine list's name
@@ -161,24 +154,6 @@ const updateWineList = async () => {
 const deleteWineList = async (id: number) => {
   await deleteWineL(id);
 };
-
-const items = computed(() => wineLists.value.length ?? 1);
 </script>
 
-<style scoped>
-.wine-list-container {
-  padding: 2rem;
-}
-
-.wine-list-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.empty-state {
-  text-align: center;
-  color: #666;
-  font-size: 1.2rem;
-}
-</style>
+<style scoped></style>
