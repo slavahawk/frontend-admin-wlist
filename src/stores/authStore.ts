@@ -30,7 +30,7 @@ export const useAuthStore = defineStore("auth", () => {
   const login = async (email: string, password: string) => {
     handleLoadState(true);
     try {
-      const data = await AuthService.loginCustomer({ email, password });
+      const data = await AuthService.login({ email, password });
       checkData(data, "User data not found in response");
 
       isAuthenticated.value = true;
