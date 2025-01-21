@@ -42,11 +42,12 @@
           </div>
         </template>
       </Column>
-      <Column field="pricePerGlass" sortable class="w-[300px]">
+      <Column field="pricePerGlass" sortable class="w-[320px]">
         <template #body="{ data }">
           <WinePrice
             :price-per-glass="data.pricePerGlass"
             :price-per-bottle="data.pricePerBottle"
+            :glass-volume="data.wine?.glassVolume"
             :bottle-volume="data.wine.bottleVolume"
           />
         </template>

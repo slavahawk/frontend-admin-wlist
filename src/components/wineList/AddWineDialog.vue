@@ -128,6 +128,8 @@ const saveWine = async ({ pricePerBottle, pricePerGlass }: Prices) => {
 
   if (data) {
     emit("update:show", false);
+    findWine.value = ''
+    currentStep.value = "1";
   }
 };
 </script>

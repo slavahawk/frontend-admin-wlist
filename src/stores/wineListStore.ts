@@ -19,10 +19,8 @@ export const useWineListStore = defineStore("wineList", () => {
     try {
       const data = await WineListService.setActiveList(id);
       const index = wineLists.value.findIndex((w: WineList) => {
-        console.log(w.id, data);
         return w.id === data.id;
       });
-      console.log(index);
       if (index > -1) {
         wineLists.value.splice(index, 1, data);
       }

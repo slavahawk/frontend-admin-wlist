@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import AppTopbar from "./AppTopbar.vue";
-import { useRegionStore } from "@/stores/regionStore.ts";
-import { useCountryStore } from "@/stores/countryStore.ts";
-import { useGrapeStore } from "@/stores/grapeStore.ts";
-import { useWineStore } from "@/stores/wineStore.ts";
-import { useWineListStore } from "@/stores/wineListStore.ts";
-import { ref } from "vue";
-import { useAuthStore } from "@/stores/authStore.ts";
+import {useRegionStore} from "@/stores/regionStore.ts";
+import {useCountryStore} from "@/stores/countryStore.ts";
+import {useGrapeStore} from "@/stores/grapeStore.ts";
+import {useWineListStore} from "@/stores/wineListStore.ts";
+import {ref} from "vue";
+import {useAuthStore} from "@/stores/authStore.ts";
 
 const { fetchRegions } = useRegionStore();
 const { fetchCountries } = useCountryStore();
 const { fetchGrapes } = useGrapeStore();
-const { fetchWinesFilter } = useWineStore();
+// const { fetchWinesFilter } = useWineStore();
 const { fetchWineLists } = useWineListStore();
 const { getMe } = useAuthStore();
 
@@ -21,7 +20,7 @@ Promise.allSettled([
   fetchRegions(),
   fetchCountries(),
   fetchGrapes(),
-  fetchWinesFilter(),
+  // fetchWinesFilter(),
   fetchWineLists(),
 ]).finally(() => (isLoad.value = false));
 </script>
