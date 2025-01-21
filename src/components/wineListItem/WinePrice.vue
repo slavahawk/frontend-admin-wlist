@@ -3,12 +3,12 @@
     <div v-if="pricePerGlass" class="flex gap-2 items-center w-[150px]">
       <Glass />
       <span class="text-xl">{{ formatPrice(pricePerGlass) }}</span>
-      <sub v-uf="glassVolume" class="text-xs items-end">{{ glassVolume }} мл</sub>
+      <sub v-if="glassVolume" class="text-xs items-end">{{ glassVolume }} мл</sub>
     </div>
     <div v-if="pricePerBottle" class="flex gap-2 items-center w-[150px]">
       <Bottle />
       <span class="text-xl">{{ formatPrice(pricePerBottle) }}</span>
-      <sub v-uf="bottleVolume" class="text-xs items-end">{{ bottleVolume }} мл</sub>
+      <sub v-if="bottleVolume" class="text-xs items-end">{{ bottleVolume }} мл</sub>
     </div>
   </div>
 </template>
