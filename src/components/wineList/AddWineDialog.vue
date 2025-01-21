@@ -68,7 +68,7 @@
 import { computed, ref } from "vue";
 import { useWineStore } from "@/stores/wineStore.ts";
 import WineDetailCard from "./WineDetailCard.vue"; // Импортируйте ваш новый компонент
-import { roleWineListItem, type Wine } from "w-list-api";
+import { roleWineList, type Wine } from "w-list-api";
 import FormSelectPrice from "@/components/form/FormSelectPrice.vue";
 import type { Prices } from "w-list-api";
 import { useWineListItemStore } from "@/stores/wineListItemStore.ts";
@@ -106,7 +106,7 @@ const { user } = storeToRefs(useAuthStore());
 const search = async (event: { query: string }) => {
   const data = await fetchWinesSearch({ name: event.query, page: 0, size: 20 });
   if (data) {
-    items.value = data._embedded[roleWineListItem(user.value?.role)];
+    items.value = data._embedded?.[roleWineList(user.value?.role)];
   }
 };
 

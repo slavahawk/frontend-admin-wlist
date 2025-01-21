@@ -62,7 +62,7 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
   // Add new item to the state
   const addWineListItem = (item: any) => {
     wineListItems.value.page.totalElements++;
-    wineListItems.value._embedded[roleWineListItem(user.value?.role)].unshift(
+    wineListItems.value._embedded?.[roleWineListItem(user.value?.role)].unshift(
       item,
     );
   };
@@ -73,7 +73,7 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
     try {
       const data = await WineListItemService.update(listId, itemId, prices);
       if (data) {
-        const findIndex = wineListItems.value._embedded[
+        const findIndex = wineListItems.value._embedded?.[
           roleWineListItem(user.value?.role)
         ].findIndex((w) => w.id === itemId);
         if (findIndex > -1) {
@@ -111,7 +111,7 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
 
     if (findIndex > -1) {
       wineListItems.value.page.totalElements--;
-      wineListItems.value._embedded[roleWineListItem(user.value?.role)].splice(
+      wineListItems.value._embedded?.[roleWineListItem(user.value?.role)].splice(
         findIndex,
         1,
       );

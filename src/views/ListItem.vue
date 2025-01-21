@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <DataTable
-      :value="wineListItems?._embedded[roleWineListItem(user.role)]"
+      :value="wineListItems?._embedded?.[roleWineListItem(user.role)]"
       :loading="loading"
       dataKey="id"
       selectionMode="single"
