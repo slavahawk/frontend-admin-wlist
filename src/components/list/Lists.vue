@@ -16,24 +16,27 @@
         />
       </div>
     </template>
-    <Column selectionMode="single" headerStyle="width: 3rem"></Column>
+    <Column  selectionMode="single" headerStyle="width: 3rem" ></Column>
     <Column field="id" header="ID" />
     <Column field="name" header="Название" />
     <Column field="itemCount" header="Количество вин" />
     <Column>
       <template #body="{ data }">
-        <Button
-          icon="pi pi-pencil"
-          variant="text"
-          @click="editWineList(data)"
-          class="p-button-warning"
-        />
-        <Button
-          icon="pi pi-trash"
-          variant="text"
-          @click="deleteWineList(data.id)"
-          class="p-button-danger"
-        />
+        <div v-if="!data.isDeleted">
+          <Button
+              icon="pi pi-pencil"
+              variant="text"
+              @click="editWineList(data)"
+              class="p-button-warning"
+          />
+          <Button
+              icon="pi pi-trash"
+              variant="text"
+              @click="deleteWineList(data.id)"
+              class="p-button-danger"
+          />
+        </div>
+        <div v-else >Удалено</div>
       </template>
     </Column>
   </DataTable>

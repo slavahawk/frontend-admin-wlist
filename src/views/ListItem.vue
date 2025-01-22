@@ -42,12 +42,12 @@
           </div>
         </template>
       </Column>
-      <Column field="pricePerGlass" sortable class="w-[320px]">
+      <Column field="pricePerGlass" sortable class="w-[340px]">
         <template #body="{ data }">
           <WinePrice
             :price-per-glass="data.pricePerGlass"
             :price-per-bottle="data.pricePerBottle"
-            :glass-volume="data.wine?.glassVolume"
+            :glass-volume="data?.glassVolume"
             :bottle-volume="data.wine.bottleVolume"
           />
         </template>
@@ -109,10 +109,10 @@ import { type WineListItem, roleWineListItem } from "w-list-api";
 import { useConfirm } from "primevue";
 import { useToast } from "primevue/usetoast";
 import WineEditPrice from "@/components/wineListItem/WineEditPrice.vue";
-import { vintage } from "@/utils/vintage.ts";
+import { vintage } from "w-list-utils";
 import { useCountryStore } from "@/stores/countryStore.ts";
 import { useRegionStore } from "@/stores/regionStore.ts";
-import WinePrice from "@/components/wineListItem/WinePrice.vue";
+import {WinePrice} from "w-list-components";
 import { AppRoutes } from "@/router";
 import { useAuthStore } from "@/stores/authStore.ts";
 const { user } = storeToRefs(useAuthStore());
@@ -173,10 +173,10 @@ const deleteWine = (wine: WineListItem) => {
   });
 };
 
-const updateWine = async ({ itemId, pricePerBottle, pricePerGlass }: any) => {
+const updateWine = async ({ itemId, pricePerBottle, pricePerGlass, glassVolume }: any) => {
   const data = await updateWineListItem({
     itemId,
-    prices: { pricePerBottle, pricePerGlass },
+    prices: { pricePerBottle, pricePerGlass, glassVolume },
     listId: activeWineList.value.id,
   });
 

@@ -44,7 +44,19 @@
               </div>
 
               <div v-if="findWine?.id" class="mt-4">
-                <WineDetailCard :wine="findWine" />
+                <WineCard
+                  :originalImagePath="findWine.originalImagePath"
+                  :name="findWine.name"
+                  :alcohol-by-volume="findWine.alcoholByVolume"
+                  :interesting-facts="findWine.interestingFacts"
+                  :organoleptic="findWine.organoleptic"
+                  :vintage="vintage(findWine.vintage)"
+                  :sugar-type="getSugarTypeLabelByValue(findWine.sugarType)"
+                  :country="getCountryNameById(findWine.countryId)"
+                  :category="getCategoryLabelByValue(findWine.category)"
+                  :colour="getColourLabelByValue(findWine.colour)"
+                  :region="getRegionNameById(findWine.regionId)"
+                />
               </div>
             </div>
           </StepPanel>
@@ -67,14 +79,27 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { useWineStore } from "@/stores/wineStore.ts";
-import WineDetailCard from "./WineDetailCard.vue"; // Импортируйте ваш новый компонент
-import { roleWineList, type Wine } from "w-list-api";
+import {
+  getCategoryLabelByValue,
+  getColourLabelByValue,
+  getSugarTypeLabelByValue,
+  type PricesWithGlass,
+  roleWineList,
+  type Wine,
+} from "w-list-api";
 import FormSelectPrice from "@/components/form/FormSelectPrice.vue";
-import type { Prices } from "w-list-api";
 import { useWineListItemStore } from "@/stores/wineListItemStore.ts";
 import { storeToRefs } from "pinia";
 import { useWineListStore } from "@/stores/wineListStore.ts";
 import { useAuthStore } from "@/stores/authStore.ts";
+import { vintage } from "w-list-utils";
+import { WineCard } from "w-list-components";
+
+import { useCountryStore } from "@/stores/countryStore.ts";
+import { useRegionStore } from "@/stores/regionStore.ts";
+
+const { getCountryNameById } = useCountryStore();
+const { getRegionNameById } = useRegionStore();
 
 const { createWineListItem } = useWineListItemStore();
 
@@ -118,17 +143,22 @@ const prevStep = () => {
   currentStep.value = "1";
 };
 
-const saveWine = async ({ pricePerBottle, pricePerGlass }: Prices) => {
+const saveWine = async ({
+  pricePerBottle,
+  pricePerGlass,
+  glassVolume,
+}: PricesWithGlass) => {
   const data = await createWineListItem({
     pricePerBottle,
     pricePerGlass,
     wineId: findWine.value.id,
     wineListId: activeWineList.value?.id,
+    glassVolume,
   });
 
   if (data) {
     emit("update:show", false);
-    findWine.value = ''
+    findWine.value = "";
     currentStep.value = "1";
   }
 };

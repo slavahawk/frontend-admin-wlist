@@ -4,8 +4,8 @@ import { useToast } from "primevue/usetoast";
 import { useRouter } from "vue-router";
 import { AppRoutes } from "@/router";
 import { ACCESS_TOKEN, AuthService, type Me, REFRESH_TOKEN } from "w-list-api";
-import { handleError } from "@/helper/handleError.ts";
-import { checkData } from "@/helper/checkData.ts";
+import { handleError } from "@/utils/handleError.ts";
+import { checkData } from "@/utils/checkData.ts";
 import type { RegistrationRequest } from "w-list-api/src/services/auth/types.ts";
 
 export const useAuthStore = defineStore("auth", () => {

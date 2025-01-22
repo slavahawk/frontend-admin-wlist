@@ -1,13 +1,14 @@
 // src/stores/wineListItemStore.ts
-import { defineStore, storeToRefs } from "pinia";
-import { ref } from "vue";
+import {defineStore, storeToRefs} from "pinia";
+import {ref} from "vue";
 import {
   type CreateWineList,
+  type PricesWithGlass,
   roleWineListItem,
   type WineListItemResponses,
   WineListItemService,
 } from "w-list-api";
-import { useAuthStore } from "@/stores/authStore.ts";
+import {useAuthStore} from "@/stores/authStore.ts";
 
 export const useWineListItemStore = defineStore("wineListItems", () => {
   const wineListItems = ref<WineListItemResponses>();
@@ -68,7 +69,15 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
   };
 
   // Update an existing wine list item
-  const updateWineListItem = async ({ listId, itemId, prices }: any) => {
+  const updateWineListItem = async ({
+    listId,
+    itemId,
+    prices,
+  }: {
+    listId: number;
+    itemId: number;
+    prices: PricesWithGlass;
+  }) => {
     setLoading(true);
     try {
       const data = await WineListItemService.update(listId, itemId, prices);
@@ -111,10 +120,9 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
 
     if (findIndex > -1) {
       wineListItems.value.page.totalElements--;
-      wineListItems.value._embedded?.[roleWineListItem(user.value?.role)].splice(
-        findIndex,
-        1,
-      );
+      wineListItems.value._embedded?.[
+        roleWineListItem(user.value?.role)
+      ].splice(findIndex, 1);
     }
   };
 

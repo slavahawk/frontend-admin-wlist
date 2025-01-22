@@ -133,11 +133,9 @@ declare module 'vue' {
     Tree: typeof import('primevue/tree')['default']
     TreeSelect: typeof import('primevue/treeselect')['default']
     TreeTable: typeof import('primevue/treetable')['default']
-    WineDetailCard: typeof import('./src/components/wineList/WineDetailCard.vue')['default']
     WineDetailsDialog: typeof import('./src/components/wineListItem/WineDetailsDialog.vue')['default']
     WineDialog: typeof import('./src/components/wine/WineDialog.vue')['default']
     WineEditPrice: typeof import('./src/components/wineListItem/WineEditPrice.vue')['default']
-    WinePrice: typeof import('./src/components/wineListItem/WinePrice.vue')['default']
     WineSearchDialog: typeof import('./src/components/wine/WineSearchDialog.vue')['default']
     WineTable: typeof import('./src/components/wine/WineTable.vue')['default']
   }

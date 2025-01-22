@@ -49,6 +49,28 @@
         >{{ $form.pricePerGlass.error?.message }}</Message
       >
     </div>
+
+
+    <div class="input-container">
+      <label for="glassVolume">Объем бокала (мл):</label>
+      <Select
+          id="glassVolume"
+          name="glassVolume"
+          v-model="initialValues.glassVolume"
+          :options="glassVolumeOptions"
+          show-clear
+          option-label="name"
+          option-value="id"
+      />
+      <Message
+          v-if="$form.glassVolume?.invalid"
+          severity="error"
+          size="small"
+          variant="simple"
+      >
+        {{ $form.glassVolume.error.message }}
+      </Message>
+    </div>
     <div class="flex justify-between items-center">
       <slot />
       <Button label="Отправить" type="submit"></Button>
@@ -57,24 +79,26 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue";
-import { z } from "zod";
-import { handleError } from "@/helper/handleError.ts";
-import { useToast } from "primevue/usetoast";
-import type { Prices } from "w-list-api";
+import {reactive} from "vue";
+import {z} from "zod";
+import {handleError} from "@/utils/handleError.ts";
+import {useToast} from "primevue/usetoast";
+import {glassVolumeOptions, type PricesWithGlass} from "w-list-api";
+
 const toast = useToast();
 
 const props = defineProps<{
-  prices?: Prices;
+  prices?: PricesWithGlass;
 }>();
 
 const emit = defineEmits<{
-  (e: "save", prices: Prices): void;
+  (e: "save", prices: PricesWithGlass): void;
 }>();
 
-const initialValues = reactive<Prices>({
+const initialValues = reactive<any>({
   pricePerBottle: props.prices?.pricePerBottle,
   pricePerGlass: props.prices?.pricePerGlass,
+  glassVolume: props.prices?.glassVolume
 });
 
 // Определите схему Zod для валидации формы с новыми полями

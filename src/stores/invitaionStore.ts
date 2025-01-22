@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
-import { handleError } from "@/helper/handleError.ts";
-import { checkData } from "@/helper/checkData.ts";
+import { handleError } from "@/utils/handleError.ts";
+import { checkData } from "@/utils/checkData.ts";
 import { InvitationService, type Invitation } from "w-list-api";
 
 export const useInvitationStore = defineStore("invitation", () => {

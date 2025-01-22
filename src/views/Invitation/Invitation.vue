@@ -76,7 +76,7 @@ import { reactive, ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import { z } from "zod";
 import { InvitationService } from "w-list-api";
-import { handleError } from "@/helper/handleError.ts";
+import { handleError } from "@/utils/handleError.ts";
 
 const { getInvitations } = useInvitationStore();
 const { invitations, isLoad } = storeToRefs(useInvitationStore());

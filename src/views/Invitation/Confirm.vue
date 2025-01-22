@@ -40,7 +40,7 @@
 import { useToast } from "primevue/usetoast";
 import { reactive } from "vue";
 import { z } from "zod";
-import { handleError } from "@/helper/handleError.ts";
+import { handleError } from "@/utils/handleError.ts";
 import { useRoute } from "vue-router";
 import { InvitationService } from "w-list-api";
 

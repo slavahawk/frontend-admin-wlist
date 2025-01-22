@@ -40,7 +40,7 @@ import { useToast } from "primevue/usetoast";
 import { reactive } from "vue";
 import { z } from "zod";
 import { AuthService } from "w-list-api";
-import { handleError } from "@/helper/handleError.ts";
+import { handleError } from "@/utils/handleError.ts";
 
 const toast = useToast();
 const initialValues = reactive({
