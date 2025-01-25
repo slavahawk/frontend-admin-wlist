@@ -17,7 +17,6 @@
       </div>
     </template>
     <Column  selectionMode="single" headerStyle="width: 3rem" ></Column>
-    <Column field="id" header="ID" />
     <Column field="name" header="Название" />
     <Column field="itemCount" header="Количество вин" />
     <Column>

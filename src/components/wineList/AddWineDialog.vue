@@ -50,6 +50,7 @@
                   :alcohol-by-volume="findWine.alcoholByVolume"
                   :interesting-facts="findWine.interestingFacts"
                   :organoleptic="findWine.organoleptic"
+                  :grapes="getGrapesNameById(findWine.grapeIds)"
                   :vintage="vintage(findWine.vintage)"
                   :sugar-type="getSugarTypeLabelByValue(findWine.sugarType)"
                   :country="getCountryNameById(findWine.countryId)"
@@ -97,9 +98,11 @@ import { WineCard } from "w-list-components";
 
 import { useCountryStore } from "@/stores/countryStore.ts";
 import { useRegionStore } from "@/stores/regionStore.ts";
+import {useGrapeStore} from "@/stores/grapeStore.ts";
 
 const { getCountryNameById } = useCountryStore();
 const { getRegionNameById } = useRegionStore();
+const { getGrapesNameById } = useGrapeStore();
 
 const { createWineListItem } = useWineListItemStore();
 

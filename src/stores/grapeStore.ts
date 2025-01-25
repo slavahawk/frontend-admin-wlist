@@ -16,6 +16,13 @@ export const useGrapeStore = defineStore("grape", () => {
     }));
   });
 
+  const getGrapesNameById = (grapeIds: number[]): string[] => {
+    return grapeIds
+        .map((id) => grapes.value.find((g: Grape) => g.id === id)?.name ?? null)
+        .filter((name) => name !== null);
+  };
+
+
   const fetchGrapes = async () => {
     loading.value = true;
     error.value = null;
@@ -56,5 +63,6 @@ export const useGrapeStore = defineStore("grape", () => {
     fetchGrapes,
     fetchGrapeById,
     clearSelectedGrape,
+    getGrapesNameById
   };
 });
