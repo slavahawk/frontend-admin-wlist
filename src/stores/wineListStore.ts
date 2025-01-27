@@ -113,7 +113,7 @@ export const useWineListStore = defineStore("wineList", () => {
       return newWineList;
     } catch (err) {
       error.value = "Ошибка при создании списка вин. Попробуйте еще раз.";
-      console.error(err);
+      console.error('err', err);
     } finally {
       loading.value = false;
     }

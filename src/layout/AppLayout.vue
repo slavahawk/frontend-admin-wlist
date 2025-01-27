@@ -13,16 +13,31 @@ const { fetchGrapes } = useGrapeStore();
 // const { fetchWinesFilter } = useWineStore();
 const { fetchWineLists } = useWineListStore();
 const { getMe } = useAuthStore();
-
 const isLoad = ref(true);
-Promise.allSettled([
-  getMe(),
-  fetchRegions(),
-  fetchCountries(),
-  fetchGrapes(),
-  // fetchWinesFilter(),
-  fetchWineLists(),
-]).finally(() => (isLoad.value = false));
+
+const initApp = async () => {
+  isLoad.value = true;
+
+  try {
+    await getMe()
+    await Promise.allSettled([
+      fetchRegions(),
+      fetchCountries(),
+      fetchGrapes(),
+      // fetchWinesFilter(),
+      fetchWineLists(),
+    ])
+  } catch (e) {
+    console.log(e)
+  } finally {
+    isLoad.value = false
+  }
+}
+
+
+initApp()
+
+
 </script>
 
 <template>

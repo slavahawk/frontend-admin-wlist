@@ -26,6 +26,7 @@ declare module 'vue' {
     Lists: typeof import('./src/components/list/Lists.vue')['default']
     Menubar: typeof import('primevue/menubar')['default']
     Message: typeof import('primevue/message')['default']
+    Paginator: typeof import('primevue/paginator')['default']
     Password: typeof import('primevue/password')['default']
     ProgressSpinner: typeof import('primevue/progressspinner')['default']
     ResetPasswordForm: typeof import('./src/components/form/ResetPasswordForm.vue')['default']

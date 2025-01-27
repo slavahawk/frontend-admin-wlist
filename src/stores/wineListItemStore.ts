@@ -1,14 +1,15 @@
 // src/stores/wineListItemStore.ts
-import {defineStore, storeToRefs} from "pinia";
-import {ref} from "vue";
+import { defineStore, storeToRefs } from "pinia";
+import { ref } from "vue";
 import {
   type CreateWineList,
   type PricesWithGlass,
   roleWineListItem,
   type WineListItemResponses,
+  type WineListItemRequest,
   WineListItemService,
 } from "w-list-api";
-import {useAuthStore} from "@/stores/authStore.ts";
+import { useAuthStore } from "@/stores/authStore.ts";
 
 export const useWineListItemStore = defineStore("wineListItems", () => {
   const wineListItems = ref<WineListItemResponses>();
@@ -21,10 +22,13 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
   };
 
   // Fetch all wine list items
-  const fetchWineListItems = async (listId: number) => {
+  const fetchWineListItems = async (
+    listId: number,
+    params: WineListItemRequest,
+  ) => {
     setLoading(true);
     try {
-      wineListItems.value = await WineListItemService.getAll(listId);
+      wineListItems.value = await WineListItemService.getAll(listId, params);
     } catch (error) {
       console.error("Error fetching wine list items:", error);
     } finally {
