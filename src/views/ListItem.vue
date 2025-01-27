@@ -1,5 +1,12 @@
 <template>
   <div class="card">
+    <!--    <FilterSection-->
+    <!--      v-if="filterState"-->
+    <!--      :initialParams="params"-->
+    <!--      :filterState="filterState"-->
+    <!--      @toggleMenu="() => (filterState = !filterState)"-->
+    <!--      @paramsChange="onParamsChange"-->
+    <!--    />-->
     <DataTable
       :value="wineListItems?._embedded?.[roleWineListItem(user.role)]"
       :loading="loading"
@@ -36,7 +43,7 @@
         <template #body="{ data }">
           <div @click="openDetailDialog(data)">
             <div>{{ data.wine.name }}</div>
-            <div style="color: var(--primary-color)">
+            <div style="color: var(--p-primary-400)">
               {{ getCountryNameById(data.wine.countryId) }},
               {{ getRegionNameById(data.wine.regionId) }}
             </div>
@@ -115,7 +122,7 @@ import { storeToRefs } from "pinia";
 import AddWineDialog from "@/components/wineList/AddWineDialog.vue";
 import { useWineListStore } from "@/stores/wineListStore.ts";
 import WineDetailsDialog from "@/components/wineListItem/WineDetailsDialog.vue";
-import { type WineListItem, roleWineListItem } from "w-list-api";
+import { roleWineListItem, type WineListItem } from "w-list-api";
 import { useConfirm } from "primevue";
 import { useToast } from "primevue/usetoast";
 import WineEditPrice from "@/components/wineListItem/WineEditPrice.vue";
@@ -125,6 +132,7 @@ import { useRegionStore } from "@/stores/regionStore.ts";
 import { WinePrice } from "w-list-components";
 import { AppRoutes } from "@/router";
 import { useAuthStore } from "@/stores/authStore.ts";
+// import FilterSection from "@/components/FilterSection.vue";
 
 const { user } = storeToRefs(useAuthStore());
 
@@ -150,6 +158,13 @@ const params = reactive({
   vintage: undefined,
   bottleVolume: undefined,
 });
+
+// const filterState = ref(true);
+//
+// const onParamsChange = (newParams) => {
+//   Object.assign(params, newParams);
+//   fetchWineListItems(activeWineList.value.id, params);
+// };
 
 if (activeWineList.value) fetchWineListItems(activeWineList.value.id, params);
 
