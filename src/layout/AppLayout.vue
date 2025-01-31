@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import AppTopbar from "./AppTopbar.vue";
-import {useRegionStore} from "@/stores/regionStore.ts";
-import {useCountryStore} from "@/stores/countryStore.ts";
-import {useGrapeStore} from "@/stores/grapeStore.ts";
-import {useWineListStore} from "@/stores/wineListStore.ts";
-import {ref} from "vue";
-import {useAuthStore} from "@/stores/authStore.ts";
+import { useRegionStore } from "@/stores/regionStore.ts";
+import { useCountryStore } from "@/stores/countryStore.ts";
+import { useGrapeStore } from "@/stores/grapeStore.ts";
+import { useWineListStore } from "@/stores/wineListStore.ts";
+import { ref } from "vue";
+import { useAuthStore } from "@/stores/authStore.ts";
 
 const { fetchRegions } = useRegionStore();
 const { fetchCountries } = useCountryStore();
@@ -19,25 +19,22 @@ const initApp = async () => {
   isLoad.value = true;
 
   try {
-    await getMe()
+    await getMe();
     await Promise.allSettled([
       fetchRegions(),
       fetchCountries(),
       fetchGrapes(),
       // fetchWinesFilter(),
       fetchWineLists(),
-    ])
+    ]);
   } catch (e) {
-    console.log(e)
+    console.log(e);
   } finally {
-    isLoad.value = false
+    isLoad.value = false;
   }
-}
+};
 
-
-initApp()
-
-
+initApp();
 </script>
 
 <template>
@@ -64,11 +61,26 @@ initApp()
     <div class="layout-mask animate-fadein"></div>
   </div>
   <Toast />
+  <Button
+    class="support"
+    as="a"
+    target="_blank"
+    href="https://t.me/slavahawk"
+    raised
+    icon="pi pi-telegram"
+    label="Служба поддержки"
+  />
 </template>
 
 <style lang="scss">
 .spinner {
   width: 50px;
   height: 50px;
+}
+
+.support {
+  position: fixed !important;
+  bottom: 24px;
+  right: 24px;
 }
 </style>
