@@ -45,7 +45,7 @@
 
               <div v-if="findWine?.id" class="mt-4">
                 <WineCard
-                  :originalImagePath="findWine.originalImagePath"
+                  :img="findWine.originalImagePath"
                   :name="findWine.name"
                   :alcohol-by-volume="findWine.alcoholByVolume"
                   :interesting-facts="findWine.interestingFacts"
@@ -98,7 +98,7 @@ import { WineCard } from "w-list-components";
 
 import { useCountryStore } from "@/stores/countryStore.ts";
 import { useRegionStore } from "@/stores/regionStore.ts";
-import {useGrapeStore} from "@/stores/grapeStore.ts";
+import { useGrapeStore } from "@/stores/grapeStore.ts";
 
 const { getCountryNameById } = useCountryStore();
 const { getRegionNameById } = useRegionStore();

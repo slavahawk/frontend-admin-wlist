@@ -23,11 +23,11 @@ const items = ref([
     to: RoutePath.ListItem,
     disabled: true,
   },
-  {
-    label: "Приглашенные",
-    icon: "pi pi-users",
-    to: RoutePath.Invitation,
-  },
+  // {
+  //   label: "Приглашенные",
+  //   icon: "pi pi-users",
+  //   to: RoutePath.Invitation,
+  // },
   {
     label: "Настройки",
     icon: "pi pi-cog",

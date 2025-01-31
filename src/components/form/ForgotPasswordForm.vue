@@ -77,7 +77,9 @@ const resolver = async ({ values }) => {
 const handleResetSubmit = async ({ valid, states }) => {
   if (valid) {
     try {
-      const data = await AuthService.forgotPassword(states.resetEmail.value);
+      const data = await AuthService.forgotPassword({
+        email: states.resetEmail.value,
+      });
       console.log(data);
       emit("close");
     } catch (e) {

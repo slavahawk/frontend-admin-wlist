@@ -6,6 +6,7 @@
     @submit="handleSubmit"
     class="form"
   >
+    {{ initialValues }}
     <div class="input-container">
       <label
         for="password"
@@ -39,7 +40,7 @@
 import { useToast } from "primevue/usetoast";
 import { reactive } from "vue";
 import { z } from "zod";
-import { AuthService } from "w-list-api";
+import { ACCESS_TOKEN, AuthService } from "w-list-api";
 import { handleError } from "@/utils/handleError.ts";
 
 const toast = useToast();
@@ -74,8 +75,8 @@ const handleSubmit = async ({ valid, states }) => {
   if (valid) {
     try {
       const data = await AuthService.resetPassword({
-        newPassword: states.email.value,
-        token: localStorage.getItem("accessToken"),
+        newPassword: states.password.value,
+        token: localStorage.getItem(ACCESS_TOKEN),
       });
       console.log(data);
     } catch (e) {
