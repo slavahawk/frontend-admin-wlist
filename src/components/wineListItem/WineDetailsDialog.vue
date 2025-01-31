@@ -2,7 +2,7 @@
   <Drawer v-model:visible="isVisible" header=" " position="full">
     <WineCard
       v-if="wine"
-      :originalImagePath="wine.originalImagePath"
+      :img="wine.originalImagePath"
       :name="wine.name"
       :alcohol-by-volume="wine.alcoholByVolume"
       :interesting-facts="wine.interestingFacts"
@@ -15,11 +15,14 @@
       :colour="getColourLabelByValue(wine.colour)"
       :region="getRegionNameById(wine.regionId)"
     >
-      <p class="mb-4">
-        <WinePrice
-          :price-per-glass="pricePerGlass"
-          :price-per-bottle="pricePerBottle"
-          :bottle-volume="wine.bottleVolume"
+      <p class="mb-4 flex gap-2 items-center">
+        <WinePriceGlass
+          :price-per-glass="wine.pricePerGlass"
+          :glass-volume="wine?.glassVolume"
+        />
+        <WinePriceBottle
+          :price-per-bottle="wine.pricePerBottle"
+          :bottle-volume="wine.wine.bottleVolume"
         />
       </p>
     </WineCard>
@@ -28,7 +31,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { WineCard, WinePrice } from "w-list-components";
+import { WineCard, WinePriceBottle, WinePriceGlass } from "w-list-components";
 import { vintage } from "w-list-utils";
 
 import {
@@ -39,7 +42,7 @@ import {
 } from "w-list-api"; // Импортируйте тип Wine, если это необходимо
 import { useCountryStore } from "@/stores/countryStore.ts";
 import { useRegionStore } from "@/stores/regionStore.ts";
-import {useGrapeStore} from "@/stores/grapeStore.ts";
+import { useGrapeStore } from "@/stores/grapeStore.ts";
 
 const { getCountryNameById } = useCountryStore();
 const { getRegionNameById } = useRegionStore();

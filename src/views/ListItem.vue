@@ -1,126 +1,154 @@
 <template>
-  <div class="card">
-    <!--    <FilterSection-->
-    <!--      v-if="filterState"-->
-    <!--      :initialParams="params"-->
-    <!--      :filterState="filterState"-->
-    <!--      @toggleMenu="() => (filterState = !filterState)"-->
-    <!--      @paramsChange="onParamsChange"-->
-    <!--    />-->
-    <DataTable
-      :value="wineListItems?._embedded?.[roleWineListItem(user.role)]"
-      :loading="loading"
-      dataKey="id"
-      selectionMode="single"
-      class="tableItems"
-    >
-      <template #header>
-        <div class="flex justify-between items-center">
-          <div class="flex gap-2 items-center">
-            <h4>Список вин {{ wineListItems?.page.totalElements }}</h4>
-            <Button
-              icon="pi pi-plus"
-              variant="text"
-              @click="showCreateDialog = true"
-            />
-          </div>
-          <div class="flex gap-2 items-center">
-            <span>Винная карта: {{ activeWineList?.name }}</span>
-            <Button
-              icon="pi pi-pencil"
-              variant="text"
-              @click="$router.push({ name: AppRoutes.LIST })"
-            />
-          </div>
-        </div>
-      </template>
-      <Column>
-        <template #body="{ data }">
-          {{ vintage(data.wine.vintage) }}
-        </template>
-      </Column>
-      <Column>
-        <template #body="{ data }">
-          <div @click="openDetailDialog(data)">
-            <div>{{ data.wine.name }}</div>
-            <div style="color: var(--p-primary-400)">
-              {{ getCountryNameById(data.wine.countryId) }},
-              {{ getRegionNameById(data.wine.regionId) }}
+  <div class="filter-container">
+    <FilterSection
+      v-if="filterState"
+      :initialParams="params"
+      :filterState="filterState"
+      @toggleMenu="() => (filterState = !filterState)"
+      @paramsChange="onParamsChange"
+    />
+    <div class="flex-1">
+      <DataTable
+        :value="wineListItems?._embedded?.[roleWineListItem(user.role)]"
+        :loading="loading"
+        dataKey="id"
+        selectionMode="single"
+        class="tableItems"
+        tableStyle="min-width: 70rem"
+      >
+        <template #header>
+          <div class="flex justify-between items-center">
+            <div class="flex gap-2 items-center">
+              <h4>Список вин {{ wineListItems?.page.totalElements }}</h4>
+              <Button
+                :icon="`pi ${filterState ? 'pi-filter-slash' : 'pi-filter'}`"
+                variant="text"
+                @click="filterState = !filterState"
+                v-tooltip.bottom="
+                  `${filterState ? 'Скрыть' : 'Раскрыть'} фильтры`
+                "
+              />
+              <Button
+                icon="pi pi-plus"
+                variant="text"
+                @click="showCreateDialog = true"
+              />
+            </div>
+            <div class="flex gap-2 items-center">
+              <span>Винная карта: {{ activeWineList?.name }}</span>
+              <Button
+                icon="pi pi-pencil"
+                variant="text"
+                @click="$router.push({ name: AppRoutes.LIST })"
+              />
             </div>
           </div>
         </template>
-      </Column>
-      <Column field="pricePerGlass" class="w-[340px]">
-        <template #body="{ data }">
-          <WinePrice
-            class="grid justify-self-start"
-            :price-per-glass="data.pricePerGlass"
-            :price-per-bottle="data.pricePerBottle"
-            :glass-volume="data?.glassVolume"
-            :bottle-volume="data.wine.bottleVolume"
-          />
-        </template>
-      </Column>
-      <Column field="isHidden">
-        <template #body="{ data }">
-          <ToggleButton
-            :onLabel="'Скрыто'"
-            :offLabel="'Раскрыто'"
-            :modelValue="data.isHidden"
-            @change="toggleWineVisibility(data)"
-          />
-        </template>
-      </Column>
-
-      <Column>
-        <template #body="{ data }">
-          <div class="flex">
-            <Button
-              icon="pi pi-eye"
-              variant="text"
-              v-tooltip.bottom="`Посмотреть вино`"
+        <Column>
+          <template #body="{ data }">
+            {{ vintage(data.wine.vintage) }}
+          </template>
+        </Column>
+        <Column>
+          <template #body="{ data }">
+            <div @click="openDetailDialog(data)">
+              <div>{{ data.wine.name }}</div>
+              <div style="color: var(--p-primary-400)">
+                {{ getCountryNameById(data.wine.countryId) }},
+                {{ getRegionNameById(data.wine.regionId) }}
+              </div>
+            </div>
+          </template>
+        </Column>
+        <Column
+          field="pricePerGlass"
+          header="Цена за бокал"
+          sortable
+          class="w-[200px]"
+        >
+          <template #body="{ data }">
+            <WinePriceGlass
+              :price-per-glass="data.pricePerGlass"
+              :glass-volume="data?.glassVolume"
               @click="openDetailDialog(data)"
             />
-            <Button
-              icon="pi pi-pencil"
-              variant="text"
-              @click="editDialog(data)"
-              v-tooltip.bottom="`Редактировать вино`"
+          </template>
+        </Column>
+        <Column
+          field="pricePerBottle"
+          header="Цена за бутылку"
+          sortable
+          class="w-[200px]"
+        >
+          <template #body="{ data }">
+            <WinePriceBottle
+              :price-per-bottle="data.pricePerBottle"
+              :bottle-volume="data.wine.bottleVolume"
+              @click="openDetailDialog(data)"
             />
-            <Button
-              icon="pi pi-trash"
-              variant="text"
-              class="p-button-danger"
-              v-tooltip.bottom="`Удалить вино`"
-              @click="deleteWine(data)"
+          </template>
+        </Column>
+        <Column field="isHidden">
+          <template #body="{ data }">
+            <ToggleButton
+              :onLabel="'Скрыто'"
+              :offLabel="'Раскрыто'"
+              :modelValue="data.isHidden"
+              @change="toggleWineVisibility(data)"
             />
-          </div>
-        </template>
-      </Column>
-    </DataTable>
-    <Paginator
-      v-if="wineListItems?.page"
-      :first="params.page * params.size"
-      :rows="params.size"
-      :totalRecords="wineListItems.page.totalElements"
-      @page="onPageChange"
-      :rowsPerPageOptions="[20, 50]"
-    />
+          </template>
+        </Column>
 
-    <AddWineDialog v-model:show="showCreateDialog" />
+        <Column>
+          <template #body="{ data }">
+            <div class="flex">
+              <Button
+                icon="pi pi-eye"
+                variant="text"
+                v-tooltip.bottom="`Посмотреть вино`"
+                @click="openDetailDialog(data)"
+              />
+              <Button
+                icon="pi pi-pencil"
+                variant="text"
+                @click="editDialog(data)"
+                v-tooltip.bottom="`Редактировать вино`"
+              />
+              <Button
+                icon="pi pi-trash"
+                variant="text"
+                class="p-button-danger"
+                v-tooltip.bottom="`Удалить вино`"
+                @click="deleteWine(data)"
+              />
+            </div>
+          </template>
+        </Column>
+      </DataTable>
+      <Paginator
+        v-if="wineListItems?.page"
+        :first="params.page * params.size"
+        :rows="params.size"
+        :totalRecords="wineListItems.page.totalElements"
+        @page="onPageChange"
+        :rowsPerPageOptions="[20, 50]"
+      />
 
-    <div v-if="selectedWine">
-      <WineEditPrice
-        v-model:show="showEditDialog"
-        :wine="selectedWine"
-        @save="updateWine"
-      />
-      <WineDetailsDialog
-        v-model:show="showDetailDialog"
-        :wine="selectedWine.wine"
-        :price-per-bottle="selectedWine.pricePerBottle"
-        :price-per-glass="selectedWine.pricePerGlass"
-      />
+      <AddWineDialog v-model:show="showCreateDialog" />
+
+      <div v-if="selectedWine">
+        <WineEditPrice
+          v-model:show="showEditDialog"
+          :wine="selectedWine"
+          @save="updateWine"
+        />
+        <WineDetailsDialog
+          v-model:show="showDetailDialog"
+          :wine="selectedWine.wine"
+          :price-per-bottle="selectedWine.pricePerBottle"
+          :price-per-glass="selectedWine.pricePerGlass"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -139,10 +167,10 @@ import WineEditPrice from "@/components/wineListItem/WineEditPrice.vue";
 import { vintage } from "w-list-utils";
 import { useCountryStore } from "@/stores/countryStore.ts";
 import { useRegionStore } from "@/stores/regionStore.ts";
-import { WinePrice } from "w-list-components";
+import { WinePriceGlass, WinePriceBottle } from "w-list-components";
 import { AppRoutes } from "@/router";
 import { useAuthStore } from "@/stores/authStore.ts";
-// import FilterSection from "@/components/FilterSection.vue";
+import FilterSection from "@/components/FilterSection.vue";
 
 const { user } = storeToRefs(useAuthStore());
 
@@ -169,17 +197,24 @@ const params = reactive({
   bottleVolume: undefined,
 });
 
-// const filterState = ref(true);
-//
-// const onParamsChange = (newParams) => {
-//   Object.assign(params, newParams);
-//   fetchWineListItems(activeWineList.value.id, params);
-// };
+const filterState = ref(false);
+
+const onParamsChange = (newParams) => {
+  Object.assign(params, newParams);
+  fetchWineListItems(activeWineList.value.id, params);
+};
 
 const toggleWineVisibility = async (wine: WineListItem) => {
-  const { id, ...rest } = wine; // Деструктурируем wine на id и остальные свойства
-  const updatedWine = { ...rest, isHidden: !rest.isHidden }; // Обновляем состояние isHidden
-  await updateWine(id, updatedWine); // Передаем id и обновленные данные без id
+  await updateWineListItem({
+    itemId: wine.id,
+    dataRequest: {
+      pricePerBottle: wine.pricePerBottle,
+      pricePerGlass: wine.pricePerGlass,
+      glassVolume: wine.glassVolume,
+      isHidden: !wine.isHidden,
+    },
+    listId: activeWineList.value.id,
+  });
 };
 
 if (activeWineList.value) fetchWineListItems(activeWineList.value.id, params);
@@ -252,11 +287,4 @@ const updateWine = async ({
 };
 </script>
 
-<style lang="scss">
-.tableItems {
-  .p-datatable-header-cell {
-    padding: 0 !important;
-    border: none !important;
-  }
-}
-</style>
+<style lang="scss"></style>

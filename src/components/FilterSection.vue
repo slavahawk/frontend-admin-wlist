@@ -17,61 +17,109 @@
       />
     </div>
     <div>
-      <FilterSelect
-        label="Категории"
-        v-model="localParams.category"
-        :options="categoryOptions"
-        @change="emitParamsChange"
-      />
-      <FilterSelect
-        label="Цвет"
-        v-model="localParams.colour"
-        :options="colourOptions"
-        @change="emitParamsChange"
-      />
-      <FilterSelect
-        label="Уровень сахара"
-        v-model="localParams.sugarType"
-        :options="sugarTypesOptions"
-        @change="emitParamsChange"
-      />
-      <FilterSelect
-        label="Страна"
-        v-model="localParams.countryId"
-        :options="countriesOptions"
-        @change="emitParamsChange"
-      />
-      <FilterSelect
-        label="Регион"
-        v-model="localParams.regionId"
-        :options="regionOptions"
-        @change="emitParamsChange"
-      />
-      <FilterSelect
-        label="Виноград"
-        v-model="localParams.grapeId"
-        :options="grapeOptions"
-        @change="emitParamsChange"
-      />
-      <FilterSelect
-        label="Год урожая"
-        v-model="localParams.vintage"
-        @change="emitParamsChange"
-      />
-      <FilterSelect
-        label="Объем бутылки"
-        v-model="localParams.bottleVolume"
-        :options="bottleVolumeOptions"
-        @change="emitParamsChange"
-      />
+      <div class="input-container">
+        <div class="text-l">Категории</div>
+        <Select
+          v-model="localParams.category"
+          :options="categoryOptions"
+          option-label="label"
+          option-value="value"
+          showClear
+          filter
+          placeholder="Выберите"
+        />
+      </div>
+
+      <div class="input-container">
+        <div class="text-l">Цвет</div>
+        <Select
+          v-model="localParams.colour"
+          :options="colourOptions"
+          option-label="label"
+          option-value="value"
+          showClear
+          filter
+          placeholder="Выберите"
+        />
+      </div>
+
+      <div class="input-container">
+        <div class="text-l">Уровень сахара</div>
+        <Select
+          v-model="localParams.sugarType"
+          :options="sugarTypesOptions"
+          option-label="label"
+          option-value="value"
+          showClear
+          filter
+          placeholder="Выберите"
+        />
+      </div>
+
+      <div class="input-container">
+        <div class="text-l">Страна</div>
+        <Select
+          v-model="localParams.countryId"
+          :options="countriesOptions"
+          option-label="label"
+          option-value="value"
+          showClear
+          filter
+          placeholder="Выберите"
+        />
+      </div>
+
+      <div class="input-container">
+        <div class="text-l">Регион</div>
+        <Select
+          v-model="localParams.regionId"
+          :options="regionOptions"
+          option-label="label"
+          option-value="value"
+          showClear
+          filter
+          placeholder="Выберите"
+        />
+      </div>
+
+      <div class="input-container">
+        <div class="text-l">Виноград</div>
+        <Select
+          v-model="localParams.grapeId"
+          :options="grapeOptions"
+          option-label="label"
+          option-value="value"
+          showClear
+          filter
+          placeholder="Выберите"
+        />
+      </div>
+
+      <!--      <FilterSelect-->
+      <!--        label="Год урожая"-->
+      <!--        v-model="localParams.vintage"-->
+      <!--        @change="emitParamsChange"-->
+      <!--      />-->
+
+      <div class="input-container">
+        <div class="text-l">Объем бутылк</div>
+        <Select
+          v-model="localParams.bottleVolume"
+          :options="bottleVolumeOptions"
+          option-label="name"
+          option-value="id"
+          showClear
+          filter
+          placeholder="Выберите"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue";
-import FilterSelect from "./FilterSelect.vue";
-import type {
+import { reactive, watch } from "vue";
+import {
   categoryOptions,
   colourOptions,
   bottleVolumeOptions,
@@ -96,10 +144,9 @@ const emit = defineEmits(["reset", "paramsChange", "toggleMenu"]);
 // Создаем локальный параметр на основе начального параметра
 const localParams = reactive({ ...props.initialParams });
 
-// Эмитим изменение параметров
-const emitParamsChange = () => {
-  emit("paramsChange", localParams); // Эмитим измененные параметры
-};
+watch(localParams, (val) => {
+  emit("paramsChange", val);
+});
 
 const resetFilters = () => {
   Object.keys(localParams).forEach((key) => {
