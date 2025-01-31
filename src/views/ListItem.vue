@@ -61,6 +61,16 @@
           />
         </template>
       </Column>
+      <Column field="isHidden">
+        <template #body="{ data }">
+          <ToggleButton
+            :onLabel="'Скрыто'"
+            :offLabel="'Раскрыто'"
+            :modelValue="data.isHidden"
+            @change="toggleWineVisibility(data)"
+          />
+        </template>
+      </Column>
 
       <Column>
         <template #body="{ data }">
@@ -94,7 +104,7 @@
       :rows="params.size"
       :totalRecords="wineListItems.page.totalElements"
       @page="onPageChange"
-      :rowsPerPageOptions="[10, 20, 50]"
+      :rowsPerPageOptions="[20, 50]"
     />
 
     <AddWineDialog v-model:show="showCreateDialog" />
@@ -148,7 +158,7 @@ const { getRegionNameById } = useRegionStore();
 
 const params = reactive({
   page: 0,
-  size: 10,
+  size: 20,
   category: undefined,
   colour: undefined,
   sugarType: undefined,
@@ -165,6 +175,12 @@ const params = reactive({
 //   Object.assign(params, newParams);
 //   fetchWineListItems(activeWineList.value.id, params);
 // };
+
+const toggleWineVisibility = async (wine: WineListItem) => {
+  const { id, ...rest } = wine; // Деструктурируем wine на id и остальные свойства
+  const updatedWine = { ...rest, isHidden: !rest.isHidden }; // Обновляем состояние isHidden
+  await updateWine(id, updatedWine); // Передаем id и обновленные данные без id
+};
 
 if (activeWineList.value) fetchWineListItems(activeWineList.value.id, params);
 

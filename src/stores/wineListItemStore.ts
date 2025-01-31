@@ -3,7 +3,7 @@ import { defineStore, storeToRefs } from "pinia";
 import { ref } from "vue";
 import {
   type CreateWineList,
-  type PricesWithGlass,
+  type UpdateWineListItem,
   roleWineListItem,
   type WineListItemResponses,
   type WineListItemRequest,
@@ -76,15 +76,19 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
   const updateWineListItem = async ({
     listId,
     itemId,
-    prices,
+    dataRequest,
   }: {
     listId: number;
     itemId: number;
-    prices: PricesWithGlass;
+    dataRequest: UpdateWineListItem;
   }) => {
     setLoading(true);
     try {
-      const data = await WineListItemService.update(listId, itemId, prices);
+      const data = await WineListItemService.update(
+        listId,
+        itemId,
+        dataRequest,
+      );
       if (data) {
         const findIndex = wineListItems.value._embedded?.[
           roleWineListItem(user.value?.role)

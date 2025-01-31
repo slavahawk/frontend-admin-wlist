@@ -42,6 +42,7 @@ declare module 'vue' {
     StepPanels: typeof import('primevue/steppanels')['default']
     Stepper: typeof import('primevue/stepper')['default']
     Toast: typeof import('primevue/toast')['default']
+    ToggleButton: typeof import('primevue/togglebutton')['default']
     WineDetailsDialog: typeof import('./src/components/wineListItem/WineDetailsDialog.vue')['default']
     WineEditPrice: typeof import('./src/components/wineListItem/WineEditPrice.vue')['default']
   }
