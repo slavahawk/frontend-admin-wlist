@@ -1,4 +1,3 @@
-// src/stores/wineListItemStore.ts
 import { defineStore, storeToRefs } from "pinia";
 import { ref } from "vue";
 import {
@@ -10,61 +9,52 @@ import {
   WineListItemService,
 } from "w-list-api";
 import { useAuthStore } from "@/stores/authStore.ts";
+import { handleError } from "@/utils/handleError.ts";
+import { useToast } from "primevue/usetoast";
 
 export const useWineListItemStore = defineStore("wineListItems", () => {
   const wineListItems = ref<WineListItemResponses>();
   const loading = ref(false);
   const { user } = storeToRefs(useAuthStore());
+  const toast = useToast();
 
-  // Utility function to set loading state
-  const setLoading = (state: boolean) => {
-    loading.value = state;
+  // Utility function to handle loading state
+  const executeWithLoading = async (callback: () => Promise<any>) => {
+    loading.value = true;
+    try {
+      return await callback();
+    } catch (error) {
+      handleError(error, toast);
+    } finally {
+      loading.value = false;
+    }
   };
 
   // Fetch all wine list items
-  const fetchWineListItems = async (
-    listId: number,
-    params: WineListItemRequest,
-  ) => {
-    setLoading(true);
-    try {
-      wineListItems.value = await WineListItemService.getAll(listId, params);
-    } catch (error) {
-      console.error("Error fetching wine list items:", error);
-    } finally {
-      setLoading(false);
-    }
+  const fetchWineListItems = (listId: number, params: WineListItemRequest) => {
+    return executeWithLoading(() =>
+      WineListItemService.getAll(listId, params).then((data) => {
+        wineListItems.value = data;
+      }),
+    );
   };
 
   // Fetch a wine list item by ID
-  const fetchWineListItemById = async (listId: number, id: number) => {
-    setLoading(true);
-    try {
-      return await WineListItemService.getById(listId, id);
-    } catch (error) {
-      console.error("Error fetching wine list item by ID:", error);
-    } finally {
-      setLoading(false);
-    }
+  const fetchWineListItemById = (listId: number, id: number) => {
+    return executeWithLoading(() => WineListItemService.getById(listId, id));
   };
 
   // Create a new wine list item
-  const createWineListItem = async (wineListItem: CreateWineList) => {
-    setLoading(true);
-    try {
-      const data = await WineListItemService.create(wineListItem);
-      if (data) {
-        addWineListItem(data);
+  const createWineListItem = (wineListItem: CreateWineList) => {
+    return executeWithLoading(() =>
+      WineListItemService.create(wineListItem).then((data) => {
+        if (data) addWineListItem(data);
         return data;
-      }
-    } catch (error) {
-      console.error("Error creating wine list item:", error);
-    } finally {
-      setLoading(false);
-    }
+      }),
+    );
   };
 
-  // Add new item to the state
+  // Add new item to the list
   const addWineListItem = (item: any) => {
     wineListItems.value.page.totalElements++;
     wineListItems.value._embedded?.[roleWineListItem(user.value?.role)].unshift(
@@ -73,7 +63,7 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
   };
 
   // Update an existing wine list item
-  const updateWineListItem = async ({
+  const updateWineListItem = ({
     listId,
     itemId,
     dataRequest,
@@ -82,55 +72,40 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
     itemId: number;
     dataRequest: UpdateWineListItem;
   }) => {
-    setLoading(true);
-    try {
+    return executeWithLoading(async () => {
       const data = await WineListItemService.update(
         listId,
         itemId,
         dataRequest,
       );
       if (data) {
-        const findIndex = wineListItems.value._embedded?.[
-          roleWineListItem(user.value?.role)
-        ].findIndex((w) => w.id === itemId);
-        if (findIndex > -1) {
-          wineListItems.value._embedded[
-            roleWineListItem(user.value?.role)
-          ].splice(findIndex, 1, data);
+        const items =
+          wineListItems.value._embedded[roleWineListItem(user.value?.role)];
+        const index = items.findIndex((w) => w.id === itemId);
+        if (index > -1) {
+          items.splice(index, 1, data);
         }
         return data;
       }
-    } catch (error) {
-      console.error("Error updating wine list item:", error);
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   // Delete a wine list item
-  const deleteWineListItem = async (listId: number, itemId: number) => {
-    setLoading(true);
-    try {
+  const deleteWineListItem = (listId: number, itemId: number) => {
+    return executeWithLoading(async () => {
       await WineListItemService.delete(listId, itemId);
       removeWineListItem(itemId);
-    } catch (error) {
-      console.error("Error deleting wine list item:", error);
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
-  // Remove item from the state
+  // Remove item from the list
   const removeWineListItem = (itemId: number) => {
-    const findIndex = wineListItems.value._embedded[
-      roleWineListItem(user.value?.role)
-    ].findIndex((w) => w.id === itemId);
-
-    if (findIndex > -1) {
+    const items =
+      wineListItems.value._embedded[roleWineListItem(user.value?.role)];
+    const index = items.findIndex((w) => w.id === itemId);
+    if (index > -1) {
       wineListItems.value.page.totalElements--;
-      wineListItems.value._embedded?.[
-        roleWineListItem(user.value?.role)
-      ].splice(findIndex, 1);
+      items.splice(index, 1);
     }
   };
 

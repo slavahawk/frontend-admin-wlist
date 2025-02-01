@@ -1,4 +1,5 @@
 <template>
+  <div id="qrcode"></div>
   <div class="filter-container">
     <FilterSection
       v-if="filterState"
@@ -144,9 +145,7 @@
         />
         <WineDetailsDialog
           v-model:show="showDetailDialog"
-          :wine="selectedWine.wine"
-          :price-per-bottle="selectedWine.pricePerBottle"
-          :price-per-glass="selectedWine.pricePerGlass"
+          :wine="selectedWine"
         />
       </div>
     </div>
@@ -274,10 +273,11 @@ const updateWine = async ({
   pricePerBottle,
   pricePerGlass,
   glassVolume,
+  isHidden,
 }: any) => {
   const data = await updateWineListItem({
     itemId,
-    prices: { pricePerBottle, pricePerGlass, glassVolume },
+    dataRequest: { pricePerBottle, pricePerGlass, glassVolume, isHidden },
     listId: activeWineList.value.id,
   });
 

@@ -2,23 +2,23 @@
   <Drawer v-model:visible="isVisible" header=" " position="full">
     <WineCard
       v-if="wine"
-      :img="wine.originalImagePath"
-      :name="wine.name"
-      :alcohol-by-volume="wine.alcoholByVolume"
+      :img="wine.wine.originalImagePath"
+      :name="wine.wine.name"
+      :alcohol-by-volume="wine.wine.alcoholByVolume"
       :interesting-facts="wine.interestingFacts"
-      :organoleptic="wine.organoleptic"
-      :vintage="vintage(wine.vintage)"
-      :grapes="getGrapesNameById(wine.grapeIds)"
-      :sugar-type="getSugarTypeLabelByValue(wine.sugarType)"
-      :country="getCountryNameById(wine.countryId)"
-      :category="getCategoryLabelByValue(wine.category)"
-      :colour="getColourLabelByValue(wine.colour)"
-      :region="getRegionNameById(wine.regionId)"
+      :organoleptic="wine.wine.organoleptic"
+      :vintage="vintage(wine.wine.vintage)"
+      :grapes="getGrapesNameById(wine.wine.grapeIds)"
+      :sugar-type="getSugarTypeLabelByValue(wine.wine.sugarType)"
+      :country="getCountryNameById(wine.wine.countryId)"
+      :category="getCategoryLabelByValue(wine.wine.category)"
+      :colour="getColourLabelByValue(wine.wine.colour)"
+      :region="getRegionNameById(wine.wine.regionId)"
     >
       <p class="mb-4 flex gap-2 items-center">
         <WinePriceGlass
           :price-per-glass="wine.pricePerGlass"
-          :glass-volume="wine?.glassVolume"
+          :glass-volume="wine.glassVolume"
         />
         <WinePriceBottle
           :price-per-bottle="wine.pricePerBottle"
@@ -38,7 +38,7 @@ import {
   getCategoryLabelByValue,
   getColourLabelByValue,
   getSugarTypeLabelByValue,
-  type Wine,
+  type WineListItem,
 } from "w-list-api"; // Импортируйте тип Wine, если это необходимо
 import { useCountryStore } from "@/stores/countryStore.ts";
 import { useRegionStore } from "@/stores/regionStore.ts";
@@ -54,9 +54,7 @@ const emit = defineEmits<{
 
 const props = defineProps<{
   show: boolean;
-  wine: Wine | null;
-  pricePerGlass?: number;
-  pricePerBottle: number;
+  wine: WineListItem | null;
 }>();
 
 const isVisible = computed({

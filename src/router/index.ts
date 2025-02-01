@@ -11,6 +11,7 @@ export enum AppRoutes {
   COMMON = "Common",
   LIST = "List",
   LIST_ITEM = "ListItem",
+  RESET_PASSWORD = "ResetPassword",
 }
 
 export const RoutePath: Record<AppRoutes, string> = {
@@ -21,11 +22,18 @@ export const RoutePath: Record<AppRoutes, string> = {
   [AppRoutes.COMMON]: "/common",
   [AppRoutes.LIST]: "/list",
   [AppRoutes.LIST_ITEM]: "/",
+  [AppRoutes.RESET_PASSWORD]: "/reset-password",
 };
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
+    {
+      path: RoutePath.ResetPassword,
+      name: AppRoutes.RESET_PASSWORD,
+      component: () => import("@/views/ResetPassword.vue"),
+      meta: { requiresAuth: false },
+    },
     {
       path: "/",
       component: AppLayout,
@@ -74,6 +82,7 @@ const router = createRouter({
       path: "/:pathMatch(.*)*",
       name: "notfound",
       component: () => import("@/views/NotFound.vue"),
+      meta: { requiresAuth: false },
     },
 
     {

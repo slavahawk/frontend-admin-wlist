@@ -1,12 +1,14 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
 import { CountryService, type Country } from "w-list-api";
+import { handleError } from "@/utils/handleError.ts";
+import { useToast } from "primevue/usetoast";
 
 export const useCountryStore = defineStore("country", () => {
   const countries = ref<Country[]>([]);
   const selectedCountry = ref<Country | null>(null);
   const loading = ref(false);
-  const error = ref<string | null>(null);
+  const toast = useToast();
 
   const countriesOptions = computed(() => {
     return countries.value.map((country) => ({
@@ -20,13 +22,11 @@ export const useCountryStore = defineStore("country", () => {
 
   const fetchCountries = async () => {
     loading.value = true;
-    error.value = null;
 
     try {
       countries.value = await CountryService.getAll();
     } catch (err) {
-      error.value = "Ошибка при получении стран. Попробуйте еще раз.";
-      console.error(err);
+      handleError(err, toast);
     } finally {
       loading.value = false;
     }
@@ -34,13 +34,11 @@ export const useCountryStore = defineStore("country", () => {
 
   const fetchCountryById = async (id: number) => {
     loading.value = true;
-    error.value = null;
 
     try {
       selectedCountry.value = await CountryService.getById(id);
     } catch (err) {
-      error.value = "Ошибка при получении страны. Попробуйте еще раз.";
-      console.error(err);
+      handleError(err, toast);
     } finally {
       loading.value = false;
     }
@@ -54,7 +52,6 @@ export const useCountryStore = defineStore("country", () => {
     countries,
     selectedCountry,
     loading,
-    error,
     fetchCountries,
     fetchCountryById,
     clearSelectedCountry,

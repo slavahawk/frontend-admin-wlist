@@ -6,7 +6,6 @@
     @submit="handleSubmit"
     class="form"
   >
-    {{ initialValues }}
     <div class="input-container">
       <label
         for="password"

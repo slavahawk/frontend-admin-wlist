@@ -17,7 +17,6 @@ declare module 'vue' {
     Dialog: typeof import('primevue/dialog')['default']
     Drawer: typeof import('primevue/drawer')['default']
     FilterSection: typeof import('./src/components/FilterSection.vue')['default']
-    FilterSelect: typeof import('./src/components/FilterSelect.vue')['default']
     FloatingConfigurator: typeof import('./src/components/FloatingConfigurator.vue')['default']
     ForgotPasswordDialog: typeof import('./src/components/ForgotPasswordDialog.vue')['default']
     ForgotPasswordForm: typeof import('./src/components/form/ForgotPasswordForm.vue')['default']

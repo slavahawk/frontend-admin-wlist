@@ -10,7 +10,6 @@ import { useAuthStore } from "@/stores/authStore.ts";
 const { fetchRegions } = useRegionStore();
 const { fetchCountries } = useCountryStore();
 const { fetchGrapes } = useGrapeStore();
-// const { fetchWinesFilter } = useWineStore();
 const { fetchWineLists } = useWineListStore();
 const { getMe } = useAuthStore();
 const isLoad = ref(true);
@@ -24,7 +23,6 @@ const initApp = async () => {
       fetchRegions(),
       fetchCountries(),
       fetchGrapes(),
-      // fetchWinesFilter(),
       fetchWineLists(),
     ]);
   } catch (e) {
@@ -60,7 +58,6 @@ initApp();
     </div>
     <div class="layout-mask animate-fadein"></div>
   </div>
-  <Toast />
   <Button
     class="support"
     as="a"

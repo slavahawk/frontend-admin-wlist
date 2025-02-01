@@ -9,7 +9,7 @@
       :prices="{
         pricePerBottle: wine?.pricePerBottle,
         pricePerGlass: wine?.pricePerGlass,
-        glassVolume: wine?.wine?.glassVolume
+        glassVolume: wine?.wine?.glassVolume,
       }"
       @save="saveWine"
     >
@@ -19,16 +19,12 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import type { Prices, WineListItem, PricesWithGlass } from "w-list-api";
+import type { PricesWithGlass, WineListItem } from "w-list-api";
 import FormSelectPrice from "@/components/form/FormSelectPrice.vue";
-
-interface Save extends Prices {
-  itemId: number;
-}
 
 const emit = defineEmits<{
   (e: "update:show", bol: boolean): void;
-  (e: "save", val: Save): void;
+  (e: "save", val: any): void;
 }>();
 
 const props = defineProps<{
@@ -46,7 +42,12 @@ const isVisible = computed({
 });
 
 const saveWine = async (prices: PricesWithGlass) => {
-  if (props.wine) emit("save", { itemId: props.wine?.id, ...prices });
+  if (props.wine)
+    emit("save", {
+      itemId: props.wine?.id,
+      ...prices,
+      isHidden: props.wine.isHidden,
+    });
 };
 </script>
 

@@ -2,8 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import { handleError } from "@/utils/handleError.ts";
-import { checkData } from "@/utils/checkData.ts";
-import { InvitationService, type Invitation } from "w-list-api";
+import { type Invitation, InvitationService } from "w-list-api";
 
 export const useInvitationStore = defineStore("invitation", () => {
   const invitations = ref<Invitation[]>([]);
@@ -14,9 +13,6 @@ export const useInvitationStore = defineStore("invitation", () => {
     isLoad.value = true;
     try {
       const data = await InvitationService.getAll();
-
-      checkData(data);
-
       toast.add({
         severity: "success",
         summary: "Приглашенные получены",
