@@ -9,7 +9,7 @@
       :prices="{
         pricePerBottle: wine?.pricePerBottle,
         pricePerGlass: wine?.pricePerGlass,
-        glassVolume: wine?.wine?.glassVolume,
+        glassVolume: wine?.glassVolume,
       }"
       @save="saveWine"
     >
