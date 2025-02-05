@@ -36,12 +36,13 @@
               />
             </div>
             <div class="flex gap-2 items-center">
-              <span>Винная карта: {{ activeWineList?.name }}</span>
               <Button
-                icon="pi pi-pencil"
-                variant="text"
-                @click="$router.push({ name: AppRoutes.LIST })"
-              />
+                as="a"
+                link
+                :href="`https://customer.w-list.ru/${activeWineList.shopId}`"
+                target="_blank"
+                >Ссылка на винную карту</Button
+              >
             </div>
           </div>
         </template>

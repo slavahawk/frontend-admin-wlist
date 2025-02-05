@@ -16,26 +16,37 @@
         />
       </div>
     </template>
-    <Column  selectionMode="single" headerStyle="width: 3rem" ></Column>
+    <Column selectionMode="single" headerStyle="width: 3rem"></Column>
     <Column field="name" header="Название" />
     <Column field="itemCount" header="Количество вин" />
+    <Column header="Ссылка на винную карту">
+      <template #body="{ data }">
+        <Button
+          as="a"
+          link
+          :href="`https://customer.w-list.ru/${data.shopId}`"
+          target="_blank"
+          >Ссылка</Button
+        >
+      </template>
+    </Column>
     <Column>
       <template #body="{ data }">
         <div v-if="!data.isDeleted">
           <Button
-              icon="pi pi-pencil"
-              variant="text"
-              @click="editWineList(data)"
-              class="p-button-warning"
+            icon="pi pi-pencil"
+            variant="text"
+            @click="editWineList(data)"
+            class="p-button-warning"
           />
           <Button
-              icon="pi pi-trash"
-              variant="text"
-              @click="deleteWineList(data.id)"
-              class="p-button-danger"
+            icon="pi pi-trash"
+            variant="text"
+            @click="deleteWineList(data.id)"
+            class="p-button-danger"
           />
         </div>
-        <div v-else >Удалено</div>
+        <div v-else>Удалено</div>
       </template>
     </Column>
   </DataTable>
