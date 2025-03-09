@@ -36,17 +36,17 @@ const items = ref([
   },
 ]);
 
-if (user.value?.role === Role.ADMIN) {
-  items.value.push({
-    label: "Приглашенные",
-    icon: "pi pi-users",
-    to: RoutePath.Invitation,
-  });
-}
-
 watchEffect(() => {
   if (isSelectedWineList.value) {
     items.value[0].disabled = !isSelectedWineList.value;
+  }
+
+  if (user.value?.role === Role.ADMIN) {
+    items.value.push({
+      label: "Приглашенные",
+      icon: "pi pi-users",
+      to: RoutePath.Invitation,
+    });
   }
 });
 </script>
