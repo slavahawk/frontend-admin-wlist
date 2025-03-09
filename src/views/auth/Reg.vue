@@ -118,19 +118,12 @@
             <div class="mt-4 max-w-xl">
               Нажимая на кнопку «Зарегистрироваться» я даю согласие на
               <a
-                style="color: var(--primary-color)"
-                href="https://files.puzzlebrain.ru/documents/main/6._Soglasie_na_obrabotku_personalnyh_dannyh.pdf"
+                style="color: var(--p-primary-400)"
+                href="https://files.w-list.ru/soglasie_na_obrabotku_personalnyh_dannyh.pdf"
                 target="_blank"
               >
                 обработку моих персональных данных</a
               >
-              и соглашаюсь с условиями
-              <a
-                style="color: var(--primary-color)"
-                href="https://files.puzzlebrain.ru/documents/main/9._Oferta_dlya_sellerov.pdf"
-                target="_blank"
-                >оферты</a
-              >.
             </div>
 
             <div class="flex items-center justify-between mt-4 mb-8 gap-8">

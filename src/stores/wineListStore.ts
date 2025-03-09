@@ -4,6 +4,7 @@ import {
   type CreateWineList,
   type WineList,
   WineListService,
+  ActiveWineListService,
 } from "w-list-api";
 import { useToast } from "primevue/usetoast";
 import { handleError } from "@/utils/handleError.ts"; // Пути к сервису управления списками вин
@@ -28,7 +29,7 @@ export const useWineListStore = defineStore("wineList", () => {
 
   const setActiveList = async (id: number) => {
     return executeWithLoading(async () => {
-      const data = await WineListService.setActiveList(id);
+      const data = await ActiveWineListService.setActiveList(id);
       const index = wineLists.value.findIndex(
         (w: WineList) => w.id === data.id,
       );

@@ -6,10 +6,11 @@
           <div class="flex items-center gap-2">
             <h4>Приглашенные сомелье {{ invitations?.length }}</h4>
             <Button
-              class="ml-4"
+              class="p-button-primary"
+              variant="text"
               icon="pi pi-plus"
-              size="small"
               @click="showAddInvitation = true"
+              v-tooltip.bottom="`Пригласить`"
             />
           </div>
           <Button icon="pi pi-refresh" rounded raised @click="getInvitations" />
@@ -80,6 +81,7 @@ import { handleError } from "@/utils/handleError.ts";
 
 const { getInvitations } = useInvitationStore();
 const { invitations, isLoad } = storeToRefs(useInvitationStore());
+const toast = useToast();
 
 getInvitations();
 
@@ -120,7 +122,15 @@ const handleResetSubmit = async ({ valid, states }) => {
   if (valid) {
     try {
       const data = await InvitationService.send({ email: states.email.value });
-      console.log(data);
+
+      if (data) {
+        toast.add({
+          severity: "success",
+          summary: "Приглашение отправлено",
+          life: 3000,
+        });
+        showAddInvitation.value = false;
+      }
     } catch (e) {
       handleError(e, toast);
     }

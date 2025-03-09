@@ -50,40 +50,39 @@
       >
     </div>
 
-
     <div class="input-container">
       <label for="glassVolume">Объем бокала (мл):</label>
       <Select
-          id="glassVolume"
-          name="glassVolume"
-          v-model="initialValues.glassVolume"
-          :options="glassVolumeOptions"
-          show-clear
-          option-label="name"
-          option-value="id"
+        id="glassVolume"
+        name="glassVolume"
+        v-model="initialValues.glassVolume"
+        :options="glassVolumeOptions"
+        show-clear
+        option-label="name"
+        option-value="id"
       />
       <Message
-          v-if="$form.glassVolume?.invalid"
-          severity="error"
-          size="small"
-          variant="simple"
+        v-if="$form.glassVolume?.invalid"
+        severity="error"
+        size="small"
+        variant="simple"
       >
         {{ $form.glassVolume.error.message }}
       </Message>
     </div>
     <div class="flex justify-between items-center">
       <slot />
-      <Button label="Отправить" type="submit"></Button>
+      <Button label="Добавить" type="submit"></Button>
     </div>
   </Form>
 </template>
 
 <script setup lang="ts">
-import {reactive} from "vue";
-import {z} from "zod";
-import {handleError} from "@/utils/handleError.ts";
-import {useToast} from "primevue/usetoast";
-import {glassVolumeOptions, type PricesWithGlass} from "w-list-api";
+import { reactive } from "vue";
+import { z } from "zod";
+import { handleError } from "@/utils/handleError.ts";
+import { useToast } from "primevue/usetoast";
+import { glassVolumeOptions, type PricesWithGlass } from "w-list-api";
 
 const toast = useToast();
 
@@ -98,7 +97,7 @@ const emit = defineEmits<{
 const initialValues = reactive<any>({
   pricePerBottle: props.prices?.pricePerBottle,
   pricePerGlass: props.prices?.pricePerGlass,
-  glassVolume: props.prices?.glassVolume
+  glassVolume: props.prices?.glassVolume,
 });
 
 // Определите схему Zod для валидации формы с новыми полями

@@ -37,13 +37,12 @@
 import { useToast } from "primevue/usetoast";
 import { reactive } from "vue";
 import { z } from "zod";
-import { AuthService } from "w-list-api";
 import { handleError } from "@/utils/handleError.ts";
 
 const toast = useToast();
 
 const emit = defineEmits<{
-  (e: "close"): void;
+  (e: "submit", email: string): void;
 }>();
 const initialValues = reactive({ email: "" });
 
@@ -77,11 +76,7 @@ const resolver = async ({ values }) => {
 const handleResetSubmit = async ({ valid, states }) => {
   if (valid) {
     try {
-      const data = await AuthService.forgotPassword({
-        email: states.resetEmail.value,
-      });
-      console.log(data);
-      emit("close");
+      emit("submit", states.resetEmail.value);
     } catch (e) {
       handleError(e, toast);
     }

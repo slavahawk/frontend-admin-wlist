@@ -1,94 +1,60 @@
 <template>
-  <div class="flex justify-center items-center w-full min-h-screen">
-    <div class="card min-w-[50vw]">
-      <Form
-        v-slot="$form"
-        :initialValues="initialValues"
-        :resolver="resolver"
-        @submit="handleResetSubmit"
+  <FloatingConfigurator />
+  <div
+    class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden"
+  >
+    <div class="flex flex-col items-center justify-center">
+      <div
+        style="
+          border-radius: 56px;
+          padding: 0.3rem;
+          background: linear-gradient(
+            180deg,
+            var(--primary-color) 10%,
+            rgba(33, 150, 243, 0) 30%
+          );
+        "
       >
-        <div class="input-container">
-          <label
-            for="password"
-            class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2"
-            >Придумайте пароль</label
-          >
-          <InputText
-            id="password"
-            name="password"
-            type="password"
-            placeholder="Придумайте пароль"
-            v-model="initialValues.password"
-            autocomplete="email"
-          />
-          <Message
-            v-if="$form.resetEmail?.invalid"
-            severity="error"
-            size="small"
-            variant="simple"
-            >{{ $form.resetEmail.error?.message }}</Message
-          >
+        <div
+          class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20"
+          style="border-radius: 53px"
+        >
+          <div class="text-center mb-8">
+            <Logo class="w-24 h-24 ml-auto mr-auto mb-4" />
+            <div
+              class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4"
+            >
+              Придумай себе пароль
+            </div>
+          </div>
+          <FormPassword :is-load="isLoad" @submit="handleSubmit" />
         </div>
-
-        <Button label="Сохранить" type="submit"></Button>
-      </Form>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useToast } from "primevue/usetoast";
-import { reactive } from "vue";
-import { z } from "zod";
-import { handleError } from "@/utils/handleError.ts";
+import FloatingConfigurator from "@/components/FloatingConfigurator.vue";
+import Logo from "@/assets/images/svg/Logo.vue";
+import { storeToRefs } from "pinia";
+import FormPassword from "@/components/form/FormPassword.vue";
+import type { ResetPasswordRequest } from "w-list-api/src/services/auth/types.ts";
+import { useInvitationStore } from "@/stores/invitaionStore.ts";
 import { useRoute } from "vue-router";
-import { InvitationService } from "w-list-api";
 
-const toast = useToast();
-const { params } = useRoute();
+const { confirm, validate } = useInvitationStore();
+const { isLoad } = storeToRefs(useInvitationStore());
 
-const initialValues = reactive({ password: "" });
+const route = useRoute();
 
-// Определите схему Zod для валидации формы сброса пароля
-const schema = z.object({
-  password: z
-    .string()
-    .min(6, "Минимум 6 символов")
-    .nonempty("Пароль обязателен."),
-});
+if (route.query.token) {
+  validate(route.query.token);
+}
 
-// Resolver для формы сброса пароля
-const resolver = async ({ values }) => {
-  try {
-    schema.parse(values);
-    return { errors: {} }; // Если ошибок нет, возвращаем пустой объект ошибок
-  } catch (e) {
-    if (e instanceof z.ZodError) {
-      const errors = e.errors.reduce((acc, error) => {
-        const path = error.path[0]; // Получаем путь к ошибке
-        acc[path] = [{ message: error.message }]; // Добавляем ошибку по пути
-        return acc;
-      }, {});
-      return { errors }; // Возвращаем ошибки
-    }
-    return { errors: {} }; // На случай других ошибок
-  }
-};
-
-// Handle form submission for password reset
-const handleResetSubmit = async ({ valid, states }) => {
-  if (valid) {
-    try {
-      const data = await InvitationService.confirm(
-        params.token,
-        states.password.value,
-      );
-      console.log(data);
-    } catch (e) {
-      handleError(e, toast);
-    }
-  }
+const handleSubmit = async (data: ResetPasswordRequest) => {
+  await confirm(data.token, data.newPassword);
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped></style>

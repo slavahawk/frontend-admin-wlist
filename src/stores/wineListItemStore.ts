@@ -2,10 +2,10 @@ import { defineStore, storeToRefs } from "pinia";
 import { ref } from "vue";
 import {
   type CreateWineList,
-  type UpdateWineListItem,
   roleWineListItem,
-  type WineListItemResponses,
+  type UpdateWineListItem,
   type WineListItemRequest,
+  type WineListItemResponses,
   WineListItemService,
 } from "w-list-api";
 import { useAuthStore } from "@/stores/authStore.ts";
@@ -13,7 +13,15 @@ import { handleError } from "@/utils/handleError.ts";
 import { useToast } from "primevue/usetoast";
 
 export const useWineListItemStore = defineStore("wineListItems", () => {
-  const wineListItems = ref<WineListItemResponses>();
+  const wineListItems = ref<WineListItemResponses>({
+    page: {
+      number: 0,
+      size: 0,
+      totalElements: 0,
+      totalPages: 0,
+    },
+    _embedded: {},
+  });
   const loading = ref(false);
   const { user } = storeToRefs(useAuthStore());
   const toast = useToast();
@@ -56,10 +64,17 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
 
   // Add new item to the list
   const addWineListItem = (item: any) => {
+    if (!wineListItems.value.page.totalPages) {
+      wineListItems.value._embedded = {
+        [roleWineListItem(user.value.role)]: [item],
+      };
+    } else {
+      wineListItems.value._embedded?.[
+        roleWineListItem(user.value.role)
+      ].unshift(item);
+    }
+
     wineListItems.value.page.totalElements++;
-    wineListItems.value._embedded?.[roleWineListItem(user.value?.role)].unshift(
-      item,
-    );
   };
 
   // Update an existing wine list item

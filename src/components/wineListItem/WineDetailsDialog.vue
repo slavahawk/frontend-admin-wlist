@@ -1,11 +1,17 @@
 <template>
-  <Drawer v-model:visible="isVisible" header=" " position="full">
+  <Drawer
+    v-model:visible="isVisible"
+    header=" "
+    position="full"
+    class="drawerCustom"
+  >
     <WineCard
+      class="max-h-full"
       v-if="wine"
       :img="wine.wine.originalImagePath"
       :name="wine.wine.name"
       :alcohol-by-volume="wine.wine.alcoholByVolume"
-      :interesting-facts="wine.interestingFacts"
+      :interesting-facts="wine.wine.interestingFacts"
       :organoleptic="wine.wine.organoleptic"
       :vintage="vintage(wine.wine.vintage)"
       :grapes="getGrapesNameById(wine.wine.grapeIds)"
@@ -67,4 +73,18 @@ const isVisible = computed({
 });
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.drawerCustom {
+  .p-drawer-header {
+    padding: 0.5rem 1.25rem !important;
+    button {
+      background: white !important;
+    }
+  }
+
+  .p-drawer-content {
+    overflow: hidden !important;
+    padding: 0 0 var(--p-overlay-modal-padding) 0 !important;
+  }
+}
+</style>

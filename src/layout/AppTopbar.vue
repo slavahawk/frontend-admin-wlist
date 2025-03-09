@@ -8,10 +8,11 @@ import { storeToRefs } from "pinia";
 import { ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import { useWineListStore } from "@/stores/wineListStore.ts"; // Import the new dialog component
+import { Role } from "w-list-api";
 
 const { toggleDarkMode, isDarkTheme } = useLayout();
 const { logout } = useAuthStore();
-const { isLoad } = storeToRefs(useAuthStore());
+const { isLoad, user } = storeToRefs(useAuthStore());
 const route = useRoute();
 const { isSelectedWineList } = storeToRefs(useWineListStore());
 const checkActiveRoute = (item) => route.path === item.to;
@@ -24,21 +25,24 @@ const items = ref([
     disabled: true,
   },
   // {
-  //   label: "Приглашенные",
-  //   icon: "pi pi-users",
-  //   to: RoutePath.Invitation,
+  //   label: "Настройки",
+  //   icon: "pi pi-cog",
+  //   to: RoutePath.Common,
   // },
-  {
-    label: "Настройки",
-    icon: "pi pi-cog",
-    to: RoutePath.Common,
-  },
   {
     label: "Изменить винную карту",
     icon: "pi pi-users",
     to: RoutePath.List,
   },
 ]);
+
+if (user.value?.role === Role.ADMIN) {
+  items.value.push({
+    label: "Приглашенные",
+    icon: "pi pi-users",
+    to: RoutePath.Invitation,
+  });
+}
 
 watchEffect(() => {
   if (isSelectedWineList.value) {

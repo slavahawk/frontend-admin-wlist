@@ -13,6 +13,7 @@
           variant="text"
           icon="pi pi-plus"
           @click="showCreateWineListDialog"
+          v-tooltip.bottom="`Создать винную карту`"
         />
       </div>
     </template>
@@ -26,8 +27,8 @@
           link
           :href="`https://customer.w-list.ru/${data.shopId}`"
           target="_blank"
-          >Ссылка</Button
-        >
+          icon="pi pi-link"
+        ></Button>
       </template>
     </Column>
     <Column>

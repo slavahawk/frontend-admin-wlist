@@ -17,6 +17,7 @@
         class="tableItems"
         tableStyle="min-width: 70rem"
       >
+        <template #empty>Нет созданных вин</template>
         <template #header>
           <div class="flex justify-between items-center">
             <div class="flex gap-2 items-center">
@@ -33,10 +34,12 @@
                 icon="pi pi-plus"
                 variant="text"
                 @click="showCreateDialog = true"
+                v-tooltip.bottom="`Добавить вино`"
               />
             </div>
             <div class="flex gap-2 items-center">
               <Button
+                v-if="wineListItems?.page.totalElements > 0"
                 as="a"
                 link
                 :href="`https://customer.w-list.ru/${activeWineList.shopId}`"
@@ -167,8 +170,7 @@ import WineEditPrice from "@/components/wineListItem/WineEditPrice.vue";
 import { vintage } from "w-list-utils";
 import { useCountryStore } from "@/stores/countryStore.ts";
 import { useRegionStore } from "@/stores/regionStore.ts";
-import { WinePriceGlass, WinePriceBottle } from "w-list-components";
-import { AppRoutes } from "@/router";
+import { WinePriceBottle, WinePriceGlass } from "w-list-components";
 import { useAuthStore } from "@/stores/authStore.ts";
 import FilterSection from "@/components/FilterSection.vue";
 

@@ -5,7 +5,10 @@ import { useRouter } from "vue-router";
 import { AppRoutes } from "@/router";
 import { ACCESS_TOKEN, AuthService, type Me, REFRESH_TOKEN } from "w-list-api";
 import { handleError } from "@/utils/handleError.ts";
-import type { RegistrationRequest } from "w-list-api/src/services/auth/types.ts";
+import type {
+  RegistrationRequest,
+  ResetPasswordRequest,
+} from "w-list-api/src/services/auth/types.ts";
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref<Me | null>(null);
@@ -88,6 +91,32 @@ export const useAuthStore = defineStore("auth", () => {
     }
   };
 
+  const resetPassword = async (data: ResetPasswordRequest) => {
+    setLoading(true);
+    try {
+      await AuthService.resetPassword(data);
+      showToast("Успешное восстановление пароля");
+      await router.push({ name: AppRoutes.LOGIN });
+    } catch (error) {
+      handleError(error, toast);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const forgotPassword = async (email: string) => {
+    setLoading(true);
+    try {
+      await AuthService.forgotPassword({ email });
+      showToast("Успешное восстановление пароля");
+      await router.push({ name: AppRoutes.LOGIN });
+    } catch (error) {
+      handleError(error, toast);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const checkAuth = () => isAuthenticated.value;
 
   // Инициализация состояния аутентификации при создании стора
@@ -102,5 +131,7 @@ export const useAuthStore = defineStore("auth", () => {
     logout,
     checkAuth,
     getMe,
+    resetPassword,
+    forgotPassword,
   };
 });
