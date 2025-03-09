@@ -81,7 +81,6 @@ import { handleError } from "@/utils/handleError.ts";
 
 const { getInvitations } = useInvitationStore();
 const { invitations, isLoad } = storeToRefs(useInvitationStore());
-const toast = useToast();
 
 getInvitations();
 
