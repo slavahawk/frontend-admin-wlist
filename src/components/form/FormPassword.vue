@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits, reactive } from "vue";
+import { reactive } from "vue";
 import { Button, Message, Password } from "primevue";
 import { Form } from "@primevue/forms";
 import { z } from "zod";

@@ -65,6 +65,8 @@
             </div>
           </template>
         </Column>
+        <Column field="internalComment" header="Комментарий" class="w-[200px]">
+        </Column>
         <Column
           field="pricePerGlass"
           header="Цена за бокал"
@@ -277,10 +279,17 @@ const updateWine = async ({
   pricePerGlass,
   glassVolume,
   isHidden,
+  internalComment,
 }: any) => {
   const data = await updateWineListItem({
     itemId,
-    dataRequest: { pricePerBottle, pricePerGlass, glassVolume, isHidden },
+    dataRequest: {
+      pricePerBottle,
+      pricePerGlass,
+      glassVolume,
+      isHidden,
+      internalComment,
+    },
     listId: activeWineList.value.id,
   });
 

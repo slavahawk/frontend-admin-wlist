@@ -150,6 +150,7 @@ const saveWine = async ({
   pricePerBottle,
   pricePerGlass,
   glassVolume,
+  internalComment,
 }: PricesWithGlass) => {
   const data = await createWineListItem({
     pricePerBottle,
@@ -157,6 +158,7 @@ const saveWine = async ({
     wineId: findWine.value.id,
     wineListId: activeWineList.value?.id,
     glassVolume,
+    internalComment,
   });
 
   if (data) {

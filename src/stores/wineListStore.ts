@@ -87,6 +87,24 @@ export const useWineListStore = defineStore("wineList", () => {
     });
   };
 
+  const saveImage = async (id: number, image: File) => {
+    loading.value = true;
+    try {
+      const data = await WineListService.uploadImage(id, image);
+      const index = wineLists.value.findIndex((list) => list.id === id);
+      if (index > -1) {
+        wineLists.value[index] = data; // Обновление элемента
+
+        toast.add({ severity: "success", summary: "Титульный лист обновлен" });
+        return data;
+      }
+    } catch (err) {
+      handleError(err, toast);
+    } finally {
+      loading.value = false;
+    }
+  };
+
   // Функция для очистки выбранного списка вин
   const clearSelectedWineList = () => {
     wineList.value = null;
@@ -107,5 +125,6 @@ export const useWineListStore = defineStore("wineList", () => {
     isSelectedWineList,
     setActiveList,
     activeWineList,
+    saveImage,
   };
 });

@@ -35,16 +35,25 @@
       <template #body="{ data }">
         <div v-if="!data.isDeleted">
           <Button
+            icon="pi pi-image"
+            variant="text"
+            @click="editImage(data)"
+            class="p-button-warning"
+            v-tooltip.bottom="`Изменить титульный лист`"
+          />
+          <Button
             icon="pi pi-pencil"
             variant="text"
             @click="editWineList(data)"
             class="p-button-warning"
+            v-tooltip.bottom="`Редактировать карту`"
           />
           <Button
             icon="pi pi-trash"
             variant="text"
             @click="deleteWineList(data.id)"
             class="p-button-danger"
+            v-tooltip.bottom="`Удалить карту`"
           />
         </div>
         <div v-else>Удалено</div>
@@ -100,12 +109,16 @@
       />
     </div>
   </Dialog>
+
+  <DialogEditImageList v-model:show="showEditImage" :wineList="editImageList" />
 </template>
 
 <script lang="ts" setup>
 import { ref, watch } from "vue";
 import { useWineListStore } from "@/stores/wineListStore";
 import { storeToRefs } from "pinia";
+import type { WineList } from "w-list-api";
+import DialogEditImageList from "@/components/DialogEditImageList.vue";
 
 const {
   createWineList: create,
@@ -167,6 +180,13 @@ const updateWineList = async () => {
 
 const deleteWineList = async (id: number) => {
   await deleteWineL(id);
+};
+
+const showEditImage = ref(false);
+const editImageList = ref<WineList | null>(null);
+const editImage = (wineList: WineList) => {
+  editImageList.value = wineList;
+  showEditImage.value = true;
 };
 </script>
 

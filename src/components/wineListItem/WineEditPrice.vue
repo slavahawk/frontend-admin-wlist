@@ -10,6 +10,7 @@
         pricePerBottle: wine?.pricePerBottle,
         pricePerGlass: wine?.pricePerGlass,
         glassVolume: wine?.glassVolume,
+        internalComment: wine?.internalComment,
       }"
       @save="saveWine"
     >

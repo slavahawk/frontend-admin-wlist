@@ -70,6 +70,22 @@
         {{ $form.glassVolume.error.message }}
       </Message>
     </div>
+    <div class="input-container">
+      <label for="internalComment">Комментарий:</label>
+      <InputText
+        id="internalComment"
+        v-model="initialValues.internalComment"
+        placeholder="Введите комментарий"
+      />
+      <Message
+        v-if="$form.internalComment?.invalid"
+        severity="error"
+        size="small"
+        variant="simple"
+      >
+        {{ $form.internalComment.error.message }}
+      </Message>
+    </div>
     <div class="flex justify-between items-center">
       <slot />
       <Button label="Добавить" type="submit"></Button>
@@ -98,6 +114,7 @@ const initialValues = reactive<any>({
   pricePerBottle: props.prices?.pricePerBottle,
   pricePerGlass: props.prices?.pricePerGlass,
   glassVolume: props.prices?.glassVolume,
+  internalComment: props.prices?.internalComment,
 });
 
 // Определите схему Zod для валидации формы с новыми полями
