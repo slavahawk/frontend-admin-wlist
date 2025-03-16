@@ -6,7 +6,7 @@ import { useGrapeStore } from "@/stores/grapeStore.ts";
 import { useWineListStore } from "@/stores/wineListStore.ts";
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/authStore.ts";
-import TestAge from "@/components/testAge.vue";
+import DialogAge from "@/components/DialogAge.vue";
 
 const { fetchRegions } = useRegionStore();
 const { fetchCountries } = useCountryStore();
@@ -68,7 +68,7 @@ initApp();
     icon="pi pi-telegram"
     label="Служба поддержки"
   />
-  <TestAge />
+  <DialogAge />
 </template>
 
 <style lang="scss">

@@ -4,6 +4,7 @@ import {
   type CreateWineList,
   roleWineListItem,
   type UpdateWineListItem,
+  type WineListItem,
   type WineListItemRequest,
   type WineListItemResponses,
   WineListItemService,
@@ -22,6 +23,7 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
     },
     _embedded: {},
   });
+  const candidates = ref<WineListItem[]>([]);
   const loading = ref(false);
   const { user } = storeToRefs(useAuthStore());
   const toast = useToast();
@@ -75,6 +77,20 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
     }
 
     wineListItems.value.page.totalElements++;
+  };
+
+  // Add new item to the list
+  const getCandidates = async (listId: number, name: string) => {
+    loading.value = true;
+    try {
+      const data = await WineListItemService.getCandidates(listId, name);
+      candidates.value = data;
+      return data;
+    } catch (error) {
+      handleError(error, toast);
+    } finally {
+      loading.value = false;
+    }
   };
 
   // Update an existing wine list item
@@ -132,5 +148,7 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
     createWineListItem,
     deleteWineListItem,
     updateWineListItem,
+    candidates,
+    getCandidates,
   };
 });

@@ -65,8 +65,7 @@
             </div>
           </template>
         </Column>
-        <Column field="internalComment" header="Комментарий" class="w-[200px]">
-        </Column>
+
         <Column
           field="pricePerGlass"
           header="Цена за бокал"
@@ -95,26 +94,30 @@
             />
           </template>
         </Column>
-        <Column field="isHidden">
-          <template #body="{ data }">
-            <ToggleButton
-              :onLabel="'Скрыто'"
-              :offLabel="'Раскрыто'"
-              :modelValue="data.isHidden"
-              @change="toggleWineVisibility(data)"
-            />
-          </template>
-        </Column>
-
+        <Column
+          field="internalComment"
+          header="Комментарий"
+          class="w-[200px]"
+        />
         <Column>
           <template #body="{ data }">
             <div class="flex">
-              <Button
-                icon="pi pi-eye"
-                variant="text"
-                v-tooltip.bottom="`Посмотреть вино`"
-                @click="openDetailDialog(data)"
-              />
+              <div>
+                <Button
+                  v-if="data.isHidden"
+                  icon="pi pi-eye-slash"
+                  variant="text"
+                  v-tooltip.bottom="`Скрыто`"
+                  @click="toggleWineVisibility(data)"
+                />
+                <Button
+                  v-else
+                  icon="pi pi-eye"
+                  variant="text"
+                  v-tooltip.bottom="`Раскрыто`"
+                  @click="toggleWineVisibility(data)"
+                />
+              </div>
               <Button
                 icon="pi pi-pencil"
                 variant="text"
