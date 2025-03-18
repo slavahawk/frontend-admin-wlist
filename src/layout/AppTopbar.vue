@@ -1,33 +1,24 @@
 <script setup lang="ts">
 import { useLayout } from "@/layout/composables/layout";
 import AppConfigurator from "./AppConfigurator.vue";
-import { RoutePath } from "@/router";
+import { AppRoutes, RoutePath } from "@/router";
 import { useAuthStore } from "@/stores/authStore.ts";
-import Logo from "@/assets/images/svg/Logo.vue";
 import { storeToRefs } from "pinia";
 import { ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
-import { useWineListStore } from "@/stores/wineListStore.ts"; // Import the new dialog component
 import { Role } from "w-list-api";
 
 const { toggleDarkMode, isDarkTheme } = useLayout();
 const { logout } = useAuthStore();
 const { isLoad, user } = storeToRefs(useAuthStore());
 const route = useRoute();
-const { isSelectedWineList } = storeToRefs(useWineListStore());
 const checkActiveRoute = (item) => route.path === item.to;
 
 const items = ref([
   {
-    label: "Изменить винную карту",
-    icon: "pi pi-users",
-    to: RoutePath.List,
-  },
-  {
     label: "Вина",
     icon: "pi pi-users",
     to: RoutePath.ListItem,
-    disabled: true,
   },
   // {
   //   label: "Настройки",
@@ -37,10 +28,6 @@ const items = ref([
 ]);
 
 watchEffect(() => {
-  if (isSelectedWineList.value) {
-    items.value[1].disabled = !isSelectedWineList.value;
-  }
-
   if (user.value?.role === Role.ADMIN) {
     items.value.push({
       label: "Приглашенные",
@@ -54,10 +41,12 @@ watchEffect(() => {
 <template>
   <Menubar :model="items" class="layout-topbar">
     <template #start>
-      <router-link :to="RoutePath.List" class="layout-topbar-logo">
-        <Logo />
-        <span>W-List</span>
-      </router-link>
+      <Button
+        variant="text"
+        icon="pi pi-arrow-left"
+        label="Изменить карту"
+        @click="$router.push({ name: AppRoutes.LIST })"
+      ></Button>
     </template>
     <template #item="{ item }">
       <router-link
@@ -98,20 +87,6 @@ watchEffect(() => {
             <AppConfigurator />
           </div>
         </div>
-
-        <button
-          class="layout-topbar-menu-button layout-topbar-action"
-          v-styleclass="{
-            selector: '@next',
-            enterFromClass: 'hidden',
-            enterActiveClass: 'animate-scalein',
-            leaveToClass: 'hidden',
-            leaveActiveClass: 'animate-fadeout',
-            hideOnOutsideClick: true,
-          }"
-        >
-          <i class="pi pi-ellipsis-v"></i>
-        </button>
 
         <Button
           :loading="isLoad"

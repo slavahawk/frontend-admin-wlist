@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import AppTopbar from "./AppTopbar.vue";
 import { useRegionStore } from "@/stores/regionStore.ts";
 import { useCountryStore } from "@/stores/countryStore.ts";
 import { useGrapeStore } from "@/stores/grapeStore.ts";
-import { useWineListStore } from "@/stores/wineListStore.ts";
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/authStore.ts";
 import DialogAge from "@/components/DialogAge.vue";
+import { useWineListStore } from "@/stores/wineListStore.ts";
 
 const { fetchRegions } = useRegionStore();
 const { fetchCountries } = useCountryStore();
 const { fetchGrapes } = useGrapeStore();
-const { fetchWineLists } = useWineListStore();
 const { getMe } = useAuthStore();
+
+const { fetchWineLists } = useWineListStore();
 const isLoad = ref(true);
 
 const initApp = async () => {
   isLoad.value = true;
 
   try {
-    await getMe();
     await Promise.allSettled([
+      getMe(),
       fetchRegions(),
       fetchCountries(),
       fetchGrapes(),
@@ -51,13 +51,15 @@ initApp();
   </div>
 
   <div v-else class="layout-wrapper">
-    <app-topbar></app-topbar>
-    <div class="layout-main-container">
-      <div class="layout-main">
-        <router-view></router-view>
-      </div>
-    </div>
-    <div class="layout-mask animate-fadein"></div>
+    <router-view></router-view>
+
+    <!--    <app-topbar></app-topbar>-->
+    <!--    <div class="layout-main-container">-->
+    <!--      <div class="layout-main">-->
+    <!--        <router-view></router-view>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--    <div class="layout-mask animate-fadein"></div>-->
   </div>
   <Button
     class="support"

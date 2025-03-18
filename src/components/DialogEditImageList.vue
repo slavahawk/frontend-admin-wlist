@@ -25,6 +25,7 @@
         :src="imageSrc"
         alt="Image"
         class="shadow-md rounded-xl w-full sm:w-64 mt-2"
+        @error="onImageError"
       />
     </div>
 
@@ -43,6 +44,7 @@ import { computed, ref, watch } from "vue";
 import { type WineList } from "w-list-api";
 import { useWineListStore } from "@/stores/wineListStore.ts";
 import { storeToRefs } from "pinia";
+import MainImg from "@/assets/images/main.png";
 
 const { saveImage } = useWineListStore();
 const { loading } = storeToRefs(useWineListStore());
@@ -67,6 +69,10 @@ const isVisible = computed({
 // Реактивные ссылки для изображения
 const imageFile = ref<File | null>(null);
 const imageSrc = ref(null);
+
+const onImageError = () => {
+  imageSrc.value = MainImg; // Fallback to the main image if the load fails
+};
 
 watch(
   () => props.show,

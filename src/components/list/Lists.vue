@@ -1,65 +1,127 @@
 <template>
-  <DataTable
-    v-model:selection="selectList"
-    :value="wineLists"
-    :loading="loading"
-    dataKey="id"
-  >
-    <template #header>
-      <div class="flex items-center gap-2">
-        <h4>Список винных карт {{ wineLists.length }}</h4>
+  <div class="layout-topbar justify-between" style="padding: 0.5rem 0.75rem">
+    <div class="flex gap-4">
+      <Button
+        variant="text"
+        icon="pi pi-arrow-left"
+        label="Выйти"
+        @click="router.push({ name: AppRoutes.LOGIN })"
+      ></Button>
+    </div>
+    <div class="flex items-center gap-4">
+      <Button
+        v-if="activeWineList"
+        icon="pi pi-arrow-right"
+        severity="success"
+        iconPos="right"
+        size="small"
+        label="Далее"
+        @click="router.push({ name: AppRoutes.LIST_ITEM })"
+      ></Button>
+      <div class="layout-config-menu">
+        <Button @click="toggleDarkMode" link>
+          <i
+            :class="['pi', { 'pi-moon': isDarkTheme, 'pi-sun': !isDarkTheme }]"
+          ></i>
+        </Button>
+        <div class="relative">
+          <button
+            v-styleclass="{
+              selector: '@next',
+              enterFromClass: 'hidden',
+              enterActiveClass: 'animate-scalein',
+              leaveToClass: 'hidden',
+              leaveActiveClass: 'animate-fadeout',
+              hideOnOutsideClick: true,
+            }"
+            type="button"
+            class="layout-topbar-action layout-topbar-action-highlight"
+          >
+            <i class="pi pi-palette"></i>
+          </button>
+          <AppConfigurator />
+        </div>
+      </div>
+
+      <Button
+        :loading="isLoad"
+        type="button"
+        @click="logout"
+        icon="pi pi-sign-out"
+      ></Button>
+    </div>
+  </div>
+
+  <div class="layout-main-container">
+    <div>
+      <div class="card">
+        <h1 class="mb-4">Старт 🍷</h1>
+        <p>
+          1. ✨
+          <span
+            class="underline cursor-pointer"
+            @click="showCreateWineListDialog"
+          >
+            Создайте винную карту.</span
+          >
+        </p>
+        <p>
+          2. 🗒️ <Tag severity="success">Активной</Tag> может быть только одна
+          винная карта. Убедитесь, что это именно та карта для вашего заведения.
+        </p>
+        <p>
+          3. 🍇 После создания карты добавляйте вино в активной карте! Появится
+          кнопка -
+          <span v-if="!activeWineList">тут</span>
+          <Button
+            v-else
+            icon="pi pi-arrow-right"
+            severity="success"
+            iconPos="right"
+            size="small"
+            label="Далее"
+            @click="router.push({ name: AppRoutes.LIST_ITEM })"
+          ></Button>
+        </p>
+        <p>
+          4. 🥂 Доступ к винной карте возможен с любого устройства по ссылке. Вы
+          также можете скачать QR-код для быстрого доступа!
+        </p>
+        <p>
+          5. 📞 На любые вопросы готов ответить
+          <a
+            href="https://t.me/slavahawk"
+            target="_blank"
+            style="color: var(--p-primary-400)"
+            >ваш менеджер!</a
+          >
+        </p>
+      </div>
+
+      <div class="mb-4 flex gap-4 items-center">
+        <h2>Винные карты {{ wineLists.length }}</h2>
+
         <Button
-          class="p-button-primary"
-          variant="text"
           icon="pi pi-plus"
+          label="Создать винную карту"
           @click="showCreateWineListDialog"
-          v-tooltip.bottom="`Создать винную карту`"
+        ></Button>
+      </div>
+      <div class="grid__card__292">
+        <CardList
+          v-for="list in wineLists"
+          :key="list.id"
+          :list="list"
+          :loading="loading"
+          @setActive="setActive(list.id)"
+          @clickChangeImage="editImage(list)"
+          @clickEdit="editWineList(list)"
+          @clickDelete="deleteWineList(list.id)"
         />
       </div>
-    </template>
-    <Column selectionMode="single" headerStyle="width: 3rem"></Column>
-    <Column field="name" header="Название" />
-    <Column field="itemCount" header="Количество вин" />
-    <Column header="Ссылка на винную карту">
-      <template #body="{ data }">
-        <Button
-          as="a"
-          link
-          :href="`https://customer.w-list.ru/${data.shopId}`"
-          target="_blank"
-          icon="pi pi-link"
-        ></Button>
-      </template>
-    </Column>
-    <Column>
-      <template #body="{ data }">
-        <div v-if="!data.isDeleted">
-          <Button
-            icon="pi pi-image"
-            variant="text"
-            @click="editImage(data)"
-            class="p-button-warning"
-            v-tooltip.bottom="`Изменить титульный лист`"
-          />
-          <Button
-            icon="pi pi-pencil"
-            variant="text"
-            @click="editWineList(data)"
-            class="p-button-warning"
-            v-tooltip.bottom="`Редактировать карту`"
-          />
-          <Button
-            icon="pi pi-trash"
-            variant="text"
-            @click="deleteWineList(data.id)"
-            class="p-button-danger"
-            v-tooltip.bottom="`Удалить карту`"
-          />
-        </div>
-        <div v-else>Удалено</div>
-      </template>
-    </Column>
-  </DataTable>
+    </div>
+  </div>
+
   <!-- Create Wine List Dialog -->
   <Dialog
     v-model:visible="createDialogVisible"
@@ -111,14 +173,34 @@
   </Dialog>
 
   <DialogEditImageList v-model:show="showEditImage" :wineList="editImageList" />
+  <Button
+    class="support"
+    as="a"
+    target="_blank"
+    href="https://t.me/slavahawk"
+    raised
+    icon="pi pi-telegram"
+    label="Служба поддержки"
+  />
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { useWineListStore } from "@/stores/wineListStore";
 import { storeToRefs } from "pinia";
 import type { WineList } from "w-list-api";
 import DialogEditImageList from "@/components/DialogEditImageList.vue";
+import CardList from "@/components/list/CardList.vue";
+import AppConfigurator from "@/layout/AppConfigurator.vue";
+import { AppRoutes } from "@/router";
+import { useLayout } from "@/layout/composables/layout.ts";
+import { useAuthStore } from "@/stores/authStore.ts";
+import { useRouter } from "vue-router";
+
+const { toggleDarkMode, isDarkTheme } = useLayout();
+const { logout } = useAuthStore();
+const { isLoad } = storeToRefs(useAuthStore());
+const router = useRouter();
 
 const {
   createWineList: create,
@@ -134,15 +216,10 @@ const editDialogVisible = ref<boolean>(false);
 const newWineListName = ref<string>("");
 const editWineListName = ref<string>("");
 const currentEditingWineListId = ref<number | null>(null);
-const selectList = ref();
 
-if (activeWineList.value?.id) {
-  selectList.value = activeWineList.value;
-}
-
-watch(selectList, (newList) => {
-  setActiveList(newList.id);
-});
+const setActive = (id: number) => {
+  setActiveList(id);
+};
 
 const showCreateWineListDialog = () => {
   newWineListName.value = ""; // Reset the new list name
@@ -190,4 +267,10 @@ const editImage = (wineList: WineList) => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.grid__card__292 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(410px, 1fr));
+  gap: 20px;
+}
+</style>

@@ -2,6 +2,7 @@ import AppLayout from "@/layout/AppLayout.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/stores/authStore";
 import { api, initializeAuth } from "w-list-api";
+import WineLayout from "@/layout/WineLayout.vue";
 
 export enum AppRoutes {
   LOGIN = "Login",
@@ -34,6 +35,7 @@ const router = createRouter({
       component: () => import("@/views/ResetPassword.vue"),
       meta: { requiresAuth: false },
     },
+
     {
       path: "/",
       component: AppLayout,
@@ -42,33 +44,37 @@ const router = createRouter({
           path: RoutePath.List,
           name: AppRoutes.LIST,
           component: () => import("@/views/List.vue"),
-          meta: { requiresAuth: true },
+          meta: { requiresAuth: false },
         },
         {
-          path: RoutePath.Invitation,
-          name: AppRoutes.INVITATION,
-          component: () => import("@/views/Invitation/Invitation.vue"),
-          meta: { requiresAuth: true },
-        },
-        {
-          path: RoutePath.Invitation,
-          name: AppRoutes.INVITATION,
-          component: () => import("@/views/Invitation/Invitation.vue"),
-          meta: { requiresAuth: true },
-        },
-
-        {
-          path: RoutePath.Common,
-          name: AppRoutes.COMMON,
-          component: () => import("@/views/Common.vue"),
-          meta: { requiresAuth: true },
-        },
-
-        {
-          path: RoutePath.ListItem,
-          name: AppRoutes.LIST_ITEM,
-          component: () => import("@/views/ListItem.vue"),
-          meta: { requiresAuth: true },
+          path: "/",
+          component: WineLayout,
+          children: [
+            {
+              path: RoutePath.Invitation,
+              name: AppRoutes.INVITATION,
+              component: () => import("@/views/Invitation/Invitation.vue"),
+              meta: { requiresAuth: true },
+            },
+            {
+              path: RoutePath.Invitation,
+              name: AppRoutes.INVITATION,
+              component: () => import("@/views/Invitation/Invitation.vue"),
+              meta: { requiresAuth: true },
+            },
+            {
+              path: RoutePath.ListItem,
+              name: AppRoutes.LIST_ITEM,
+              component: () => import("@/views/ListItem.vue"),
+              meta: { requiresAuth: true },
+            },
+            // {
+            //   path: RoutePath.Common,
+            //   name: AppRoutes.COMMON,
+            //   component: () => import("@/views/Common.vue"),
+            //   meta: { requiresAuth: true },
+            // },
+          ],
         },
       ],
     },

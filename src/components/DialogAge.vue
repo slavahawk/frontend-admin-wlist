@@ -3,7 +3,13 @@
     <div>
       <p>
         Для доступа на сайт необходимо подтвердить свое совершеннолетие и
-        согласие на обработку файлов cookies.
+        согласие на
+        <a
+          style="color: var(--p-primary-400)"
+          target="_blank"
+          href="https://files.w-list.ru/cookies.pdf"
+          >обработку файлов cookies</a
+        >.
       </p>
       <Button class="w-full" label="Подтверждаю" @click="confirmAge" />
     </div>

@@ -28,16 +28,27 @@ export const useWineListStore = defineStore("wineList", () => {
   };
 
   const setActiveList = async (id: number) => {
-    return executeWithLoading(async () => {
+    loading.value = true;
+    try {
       const data = await ActiveWineListService.setActiveList(id);
       const index = wineLists.value.findIndex(
         (w: WineList) => w.id === data.id,
       );
       if (index > -1) {
+        wineLists.value.forEach((wineList, i) => {
+          if (i !== index) {
+            wineList.isActive = false; // Делаем неактивными все остальные списки
+          }
+        });
         wineLists.value[index] = data; // Обновление элемента
       }
+
       return data;
-    });
+    } catch (err) {
+      handleError(err, toast);
+    } finally {
+      loading.value = false;
+    }
   };
 
   // Функция для получения всех списков вин
@@ -110,8 +121,6 @@ export const useWineListStore = defineStore("wineList", () => {
     wineList.value = null;
   };
 
-  const isSelectedWineList = computed(() => !!activeWineList.value);
-
   return {
     wineLists,
     wineList,
@@ -122,7 +131,6 @@ export const useWineListStore = defineStore("wineList", () => {
     deleteWineList,
     createWineList,
     clearSelectedWineList,
-    isSelectedWineList,
     setActiveList,
     activeWineList,
     saveImage,
