@@ -113,6 +113,7 @@
           :key="list.id"
           :list="list"
           :loading="loading"
+          :disabled="list.isDeleted"
           @setActive="setActive(list.id)"
           @clickChangeImage="editImage(list)"
           @clickEdit="editWineList(list)"

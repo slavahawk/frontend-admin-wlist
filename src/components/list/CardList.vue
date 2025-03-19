@@ -1,5 +1,5 @@
 <template>
-  <div class="CardList">
+  <div class="CardList" :class="{ disabled: disabled }">
     <div class="flex gap-4">
       <img
         class="w-[100px] h-[100px] wine-image"
@@ -16,21 +16,24 @@
           variant="text"
           class="p-button-warning"
           label="Изменить титульный лист"
-          @click="emit('clickChangeImage')"
+          @click="!disabled && emit('clickChangeImage')"
+          :disabled="disabled"
         />
         <Button
           icon="pi pi-pencil"
           variant="text"
           class="p-button-warning"
           label="Редактировать карту"
-          @click="emit('clickEdit')"
+          @click="!disabled && emit('clickEdit')"
+          :disabled="disabled"
         />
         <Button
           icon="pi pi-trash"
           variant="text"
           class="p-button-danger"
           label="Удалить карту"
-          @click="emit('clickDelete')"
+          @click="!disabled && emit('clickDelete')"
+          :disabled="disabled"
         />
       </div>
     </div>
@@ -47,6 +50,7 @@
         variant="text"
         size="small"
         label="Открыть карту"
+        :disabled="disabled"
       />
       <QRCodeGenerator :name="list.name" :id="list.shopId" />
     </div>
@@ -54,7 +58,7 @@
     <div class="flex gap-4 items-center h-[30px]">
       <Tag :severity="list.isActive ? 'success' : 'warn'">{{ tagText }}</Tag>
       <Button
-        v-if="!list.isActive"
+        v-if="!list.isActive && !disabled"
         style="color: #5d79a4"
         :loading="loading"
         variant="text"
@@ -63,6 +67,9 @@
         @click="emit('setActive')"
       />
     </div>
+    <h4 v-if="disabled" class="disabled-message">
+      Чтобы вернуть карту, напишите в поддержку.
+    </h4>
   </div>
 </template>
 
@@ -75,6 +82,7 @@ import QRCodeGenerator from "@/components/QRCodeGenerator.vue";
 const props = defineProps<{
   list: WineList;
   loading?: boolean;
+  disabled?: boolean; // New prop for controlling disabled state
 }>();
 
 const tagText = computed(() =>
@@ -99,6 +107,7 @@ const emit = defineEmits<{
 
 <style scoped lang="scss">
 .CardList {
+  position: relative;
   width: 100%;
   background: var(--surface-card);
   padding: 2rem;
@@ -108,5 +117,33 @@ const emit = defineEmits<{
 
 .wine-image {
   border-radius: 4px; /* To round the corners */
+}
+
+/* Style for the disabled state */
+.disabled {
+  pointer-events: none; /* Disable pointer events for the card */
+  background: var(
+    --surface-border
+  ); /* Optional: Change background to indicate disabled state */
+  &:after {
+    opacity: 0.8;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: "";
+    background: var(--surface-border);
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.disabled-message {
+  position: absolute;
+  content: "";
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text-color);
+  z-index: 2;
 }
 </style>
