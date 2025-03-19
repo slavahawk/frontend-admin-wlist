@@ -30,7 +30,7 @@ const items = ref([
 watchEffect(() => {
   if (user.value?.role === Role.ADMIN) {
     items.value.push({
-      label: "Приглашенные",
+      label: "Приглашенные [beta]",
       icon: "pi pi-users",
       to: RoutePath.Invitation,
     });
