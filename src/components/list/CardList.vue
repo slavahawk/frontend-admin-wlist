@@ -38,10 +38,10 @@
       </div>
     </div>
 
-    <h5 class="mb-4 mt-1">{{ list.name }}</h5>
+    <h5 class="my-4">{{ list.name }}</h5>
     <div>Количество вин: {{ list.itemCount }}</div>
 
-    <div class="flex gap-2 flex-wrap items-center mt-1 mb-2">
+    <div class="flex gap-2 flex-wrap items-center my-4">
       <Button
         as="a"
         target="_blank"

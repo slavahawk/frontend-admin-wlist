@@ -41,13 +41,7 @@ initApp();
     v-if="isLoad"
     class="layout-wrapper relative flex justify-center items-center"
   >
-    <ProgressSpinner
-      class="spinner"
-      strokeWidth="8"
-      fill="transparent"
-      animationDuration=".5s"
-      aria-label="Custom ProgressSpinner"
-    />
+    <ProgressSpinner />
   </div>
 
   <div v-else class="layout-wrapper">
@@ -74,11 +68,6 @@ initApp();
 </template>
 
 <style lang="scss">
-.spinner {
-  width: 50px;
-  height: 50px;
-}
-
 .support {
   position: fixed !important;
   bottom: 24px;

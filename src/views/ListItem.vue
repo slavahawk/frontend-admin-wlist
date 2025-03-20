@@ -224,8 +224,6 @@ const toggleWineVisibility = async (wine: WineListItem) => {
   });
 };
 
-console.log(activeWineList.value);
-
 if (activeWineList.value) fetchWineListItems(activeWineList.value.id, params);
 
 const onPageChange = async ({ page, rows }) => {

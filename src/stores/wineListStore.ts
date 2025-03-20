@@ -83,10 +83,19 @@ export const useWineListStore = defineStore("wineList", () => {
 
   // Функция для удаления списка вин
   const deleteWineList = async (id: number) => {
-    return executeWithLoading(async () => {
+    loading.value = true;
+    try {
       await WineListService.delete(id);
-      wineLists.value = wineLists.value.filter((list) => list.id !== id);
-    });
+      const updatedWineLists = wineLists.value.find((list) => list.id === id);
+
+      if (updatedWineLists) {
+        updatedWineLists.isDeleted = true;
+      }
+    } catch (err) {
+      handleError(err, toast);
+    } finally {
+      loading.value = false;
+    }
   };
 
   // Функция для создания нового списка вин

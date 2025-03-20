@@ -40,7 +40,6 @@ export const useAuthStore = defineStore("auth", () => {
       showToast("Успешный вход");
       await router.push({ name: AppRoutes.LIST });
     } catch (error) {
-      console.log(error);
       handleError(error, toast);
     } finally {
       setLoading(false);
