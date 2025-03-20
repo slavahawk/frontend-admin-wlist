@@ -16,6 +16,7 @@ declare module 'vue' {
     CardList: typeof import('./src/components/list/CardList.vue')['default']
     Column: typeof import('primevue/column')['default']
     ConfirmDialog: typeof import('primevue/confirmdialog')['default']
+    ConfirmPopup: typeof import('primevue/confirmpopup')['default']
     DataTable: typeof import('primevue/datatable')['default']
     Dialog: typeof import('primevue/dialog')['default']
     DialogAge: typeof import('./src/components/DialogAge.vue')['default']

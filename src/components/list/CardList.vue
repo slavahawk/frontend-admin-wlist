@@ -32,7 +32,7 @@
           variant="text"
           class="p-button-danger"
           label="Удалить карту"
-          @click="!disabled && emit('clickDelete')"
+          @click="!disabled && confirm1($event)"
           :disabled="disabled"
         />
       </div>
@@ -78,6 +78,9 @@ import type { WineList } from "w-list-api";
 import { computed, ref } from "vue";
 import MainImg from "@/assets/images/main.png";
 import QRCodeGenerator from "@/components/QRCodeGenerator.vue";
+import { useConfirm } from "primevue";
+
+const confirm = useConfirm();
 
 const props = defineProps<{
   list: WineList;
@@ -103,6 +106,27 @@ const emit = defineEmits<{
   (e: "clickDelete"): void;
   (e: "setActive"): void;
 }>();
+
+const confirm1 = (event) => {
+  confirm.require({
+    header: "Удалить винную карту",
+    target: event.currentTarget,
+    message: "Вы действительно хотите удалить винную карту?",
+    icon: "pi pi-exclamation-triangle",
+    rejectProps: {
+      label: "Нет",
+      severity: "secondary",
+      outlined: true,
+    },
+    acceptProps: {
+      label: "Да",
+    },
+    accept: () => {
+      emit("clickDelete");
+    },
+    reject: () => {},
+  });
+};
 </script>
 
 <style scoped lang="scss">
