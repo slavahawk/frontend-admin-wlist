@@ -5,5 +5,5 @@ services:
     working_dir: /usr/src/app
     volumes:
       - .:/usr/src/app # Монтируем текущую директорию в контейнер
-    command: sh -c "npm install && npm run build-only" # Устанавливаем зависимости и запускаем сборку приложения
+    command: sh -c "rm -rf node_modules package-lock.json && npm install && npm run build-only" # Устанавливаем зависимости и запускаем сборку приложения
     restart: "no" # Не перезапускаем после завершения сборки
