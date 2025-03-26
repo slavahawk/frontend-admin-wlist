@@ -1,5 +1,9 @@
 import { defineStore, storeToRefs } from "pinia";
 import { ref } from "vue";
+import { WineListItemService } from "w-list-api";
+import { useAuthStore } from "@/stores/authStore.ts";
+import { handleError } from "@/utils/handleError.ts";
+import { useToast } from "primevue/usetoast";
 import {
   type CreateWineList,
   roleWineListItem,
@@ -7,11 +11,8 @@ import {
   type WineListItem,
   type WineListItemRequest,
   type WineListItemResponses,
-  WineListItemService,
-} from "w-list-api";
-import { useAuthStore } from "@/stores/authStore.ts";
-import { handleError } from "@/utils/handleError.ts";
-import { useToast } from "primevue/usetoast";
+} from "wlist-types";
+import { checkData } from "w-list-utils";
 
 export const useWineListItemStore = defineStore("wineListItems", () => {
   const wineListItems = ref<WineListItemResponses>({
@@ -84,6 +85,7 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
     loading.value = true;
     try {
       const data = await WineListItemService.getCandidates(listId, name);
+      checkData(data);
       candidates.value = data;
       return data;
     } catch (error) {
@@ -109,15 +111,15 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
         itemId,
         dataRequest,
       );
-      if (data) {
-        const items =
-          wineListItems.value._embedded[roleWineListItem(user.value?.role)];
-        const index = items.findIndex((w) => w.id === itemId);
-        if (index > -1) {
-          items.splice(index, 1, data);
-        }
-        return data;
+
+      checkData(data);
+      const items =
+        wineListItems.value._embedded[roleWineListItem(user.value?.role)];
+      const index = items.findIndex((w) => w.id === itemId);
+      if (index > -1) {
+        items.splice(index, 1, data);
       }
+      return data;
     });
   };
 

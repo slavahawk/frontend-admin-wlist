@@ -189,7 +189,7 @@
 import { ref } from "vue";
 import { useWineListStore } from "@/stores/wineListStore";
 import { storeToRefs } from "pinia";
-import type { WineList } from "w-list-api";
+import type { WineList } from "wlist-types";
 import DialogEditImageList from "@/components/DialogEditImageList.vue";
 import CardList from "@/components/list/CardList.vue";
 import AppConfigurator from "@/layout/AppConfigurator.vue";

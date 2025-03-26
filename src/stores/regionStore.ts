@@ -1,12 +1,13 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import { type Region, RegionService } from "w-list-api";
+import { RegionService } from "w-list-api";
 import { handleError } from "@/utils/handleError.ts";
 import { useToast } from "primevue/usetoast";
+import { type Region } from "wlist-types";
+import { checkData } from "w-list-utils";
 
 export const useRegionStore = defineStore("region", () => {
   const regions = ref<Region[]>([]);
-  const selectedRegion = ref<Region | null>(null);
   const loading = ref(false);
   const toast = useToast();
 
@@ -24,7 +25,9 @@ export const useRegionStore = defineStore("region", () => {
     loading.value = true;
 
     try {
-      regions.value = await RegionService.getAll();
+      const data = await RegionService.getAll();
+      checkData(data);
+      regions.value = data;
     } catch (err) {
       handleError(err, toast);
     } finally {
@@ -32,17 +35,11 @@ export const useRegionStore = defineStore("region", () => {
     }
   };
 
-  const clearSelectedRegion = () => {
-    selectedRegion.value = null;
-  };
-
   return {
     regions,
     regionOptions,
-    selectedRegion,
     loading,
     fetchRegions,
-    clearSelectedRegion,
     getRegionNameById,
   };
 });

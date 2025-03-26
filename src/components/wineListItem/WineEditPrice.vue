@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import type { PricesWithGlass, WineListItem } from "w-list-api";
+import type { PricesWithGlass, WineListItem } from "wlist-types";
 import FormSelectPrice from "@/components/form/FormSelectPrice.vue";
 
 const emit = defineEmits<{

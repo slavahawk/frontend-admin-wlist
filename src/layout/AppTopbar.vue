@@ -6,7 +6,7 @@ import { useAuthStore } from "@/stores/authStore.ts";
 import { storeToRefs } from "pinia";
 import { ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
-import { Role } from "w-list-api";
+import { Role } from "wlist-types";
 
 const { toggleDarkMode, isDarkTheme } = useLayout();
 const { logout } = useAuthStore();

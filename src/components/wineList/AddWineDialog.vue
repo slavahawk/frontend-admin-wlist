@@ -55,6 +55,7 @@
                   :sugar-type="getSugarTypeLabelByValue(findWine.sugarType)"
                   :country="getCountryNameById(findWine.countryId)"
                   :category="getCategoryLabelByValue(findWine.category)"
+                  :category-id="findWine.category"
                   :colour="getColourLabelByValue(findWine.colour)"
                   :region="getRegionNameById(findWine.regionId)"
                 />
@@ -84,10 +85,8 @@ import {
   getCategoryLabelByValue,
   getColourLabelByValue,
   getSugarTypeLabelByValue,
-  type PricesWithGlass,
-  roleWineList,
-  type Wine,
 } from "w-list-api";
+import { type PricesWithGlass, roleWineList, type Wine } from "wlist-types";
 import FormSelectPrice from "@/components/form/FormSelectPrice.vue";
 import { useWineListItemStore } from "@/stores/wineListItemStore.ts";
 import { storeToRefs } from "pinia";

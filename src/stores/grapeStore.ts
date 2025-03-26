@@ -1,12 +1,13 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import { GrapeService, type Grape } from "w-list-api";
+import { GrapeService } from "w-list-api";
 import { useToast } from "primevue/usetoast";
 import { handleError } from "@/utils/handleError.ts";
+import { type Grape } from "wlist-types";
+import { checkData } from "w-list-utils";
 
 export const useGrapeStore = defineStore("grape", () => {
   const grapes = ref<Grape[]>([]);
-  const selectedGrape = ref<Grape | null>(null);
   const loading = ref(false);
   const toast = useToast();
 
@@ -31,7 +32,9 @@ export const useGrapeStore = defineStore("grape", () => {
     setLoading(true);
 
     try {
-      grapes.value = await GrapeService.getAll();
+      const data = await GrapeService.getAll();
+      checkData(data);
+      grapes.value = data;
     } catch (err) {
       handleError(err, toast);
     } finally {
@@ -39,17 +42,11 @@ export const useGrapeStore = defineStore("grape", () => {
     }
   };
 
-  const clearSelectedGrape = () => {
-    selectedGrape.value = null;
-  };
-
   return {
     grapes,
     grapeOptions,
-    selectedGrape,
     loading,
     fetchGrapes,
-    clearSelectedGrape,
     getGrapesNameById,
   };
 });

@@ -51,7 +51,9 @@
         </template>
         <Column>
           <template #body="{ data }">
-            {{ vintage(data.wine.vintage) }}
+            <span v-if="showVintage(data.wine.category)">
+              {{ vintage(data.wine.vintage) }}</span
+            >
           </template>
         </Column>
         <Column>
@@ -168,11 +170,11 @@ import { storeToRefs } from "pinia";
 import AddWineDialog from "@/components/wineList/AddWineDialog.vue";
 import { useWineListStore } from "@/stores/wineListStore.ts";
 import WineDetailsDialog from "@/components/wineListItem/WineDetailsDialog.vue";
-import { roleWineListItem, type WineListItem } from "w-list-api";
+import { roleWineListItem, type WineListItem } from "wlist-types";
 import { useConfirm } from "primevue";
 import { useToast } from "primevue/usetoast";
 import WineEditPrice from "@/components/wineListItem/WineEditPrice.vue";
-import { vintage } from "w-list-utils";
+import { vintage, showVintage } from "w-list-utils";
 import { useCountryStore } from "@/stores/countryStore.ts";
 import { useRegionStore } from "@/stores/regionStore.ts";
 import { WinePriceBottle, WinePriceGlass } from "w-list-components";

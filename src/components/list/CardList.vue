@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import type { WineList } from "w-list-api";
+import type { WineList } from "wlist-types";
 import { computed, ref } from "vue";
 import MainImg from "@/assets/images/main.png";
 import QRCodeGenerator from "@/components/QRCodeGenerator.vue";

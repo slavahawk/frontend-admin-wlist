@@ -3,12 +3,14 @@ import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import { useRouter } from "vue-router";
 import { AppRoutes } from "@/router";
-import { ACCESS_TOKEN, AuthService, type Me, REFRESH_TOKEN } from "w-list-api";
+import { ACCESS_TOKEN, AuthService, REFRESH_TOKEN } from "w-list-api";
 import { handleError } from "@/utils/handleError.ts";
+import { checkData } from "w-list-utils";
 import type {
   RegistrationRequest,
   ResetPasswordRequest,
-} from "w-list-api/src/services/auth/types.ts";
+  Me,
+} from "wlist-types";
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref<Me | null>(null);
@@ -33,7 +35,7 @@ export const useAuthStore = defineStore("auth", () => {
     setLoading(true);
     try {
       const data = await AuthService.login({ email, password });
-
+      checkData(data);
       isAuthenticated.value = true;
       localStorage.setItem(ACCESS_TOKEN, data.details.accessToken);
       localStorage.setItem(REFRESH_TOKEN, data.details.refreshToken);
@@ -50,6 +52,7 @@ export const useAuthStore = defineStore("auth", () => {
     setLoading(true);
     try {
       const data = await AuthService.me();
+      checkData(data);
       user.value = data;
       return data;
     } catch (error) {
@@ -62,7 +65,8 @@ export const useAuthStore = defineStore("auth", () => {
   const register = async (body: RegistrationRequest) => {
     setLoading(true);
     try {
-      await AuthService.register(body);
+      const data = await AuthService.register(body);
+      checkData(data);
       showToast("Регистрация успешна");
       await login(body.email, body.password);
     } catch (error) {
@@ -93,7 +97,8 @@ export const useAuthStore = defineStore("auth", () => {
   const resetPassword = async (data: ResetPasswordRequest) => {
     setLoading(true);
     try {
-      await AuthService.resetPassword(data);
+      const d = await AuthService.resetPassword(data);
+      checkData(d);
       showToast("Успешное восстановление пароля");
       await router.push({ name: AppRoutes.LOGIN });
     } catch (error) {
@@ -106,7 +111,8 @@ export const useAuthStore = defineStore("auth", () => {
   const forgotPassword = async (email: string) => {
     setLoading(true);
     try {
-      await AuthService.forgotPassword({ email });
+      const data = await AuthService.forgotPassword({ email });
+      checkData(data);
       showToast("Успешное восстановление пароля");
       await router.push({ name: AppRoutes.LOGIN });
     } catch (error) {

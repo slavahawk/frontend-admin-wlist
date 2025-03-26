@@ -1,13 +1,10 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import {
-  type CreateWineList,
-  type WineList,
-  WineListService,
-  ActiveWineListService,
-} from "w-list-api";
+import { WineListService, ActiveWineListService } from "w-list-api";
 import { useToast } from "primevue/usetoast";
 import { handleError } from "@/utils/handleError.ts"; // Пути к сервису управления списками вин
+import { type CreateWineList, type WineList } from "wlist-types";
+import { checkData } from "w-list-utils";
 
 export const useWineListStore = defineStore("wineList", () => {
   const wineLists = ref<WineList[]>([]);
@@ -31,6 +28,7 @@ export const useWineListStore = defineStore("wineList", () => {
     loading.value = true;
     try {
       const data = await ActiveWineListService.setActiveList(id);
+      checkData(data);
       const index = wineLists.value.findIndex(
         (w: WineList) => w.id === data.id,
       );
@@ -73,6 +71,7 @@ export const useWineListStore = defineStore("wineList", () => {
   const updateWineList = async (id: number, wineListData: CreateWineList) => {
     return executeWithLoading(async () => {
       const updatedWineList = await WineListService.update(id, wineListData);
+      checkData(updatedWineList);
       const index = wineLists.value.findIndex((list) => list.id === id);
       if (index > -1) {
         wineLists.value[index] = updatedWineList; // Обновление элемента
@@ -102,6 +101,7 @@ export const useWineListStore = defineStore("wineList", () => {
   const createWineList = async (wineListData: CreateWineList) => {
     return executeWithLoading(async () => {
       const newWineList = await WineListService.create(wineListData);
+      checkData(newWineList);
       wineLists.value.push(newWineList);
       return newWineList;
     });
@@ -111,6 +111,7 @@ export const useWineListStore = defineStore("wineList", () => {
     loading.value = true;
     try {
       const data = await WineListService.uploadImage(id, image);
+      checkData(data);
       const index = wineLists.value.findIndex((list) => list.id === id);
       if (index > -1) {
         wineLists.value[index] = data; // Обновление элемента

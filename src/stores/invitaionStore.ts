@@ -2,9 +2,11 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import { handleError } from "@/utils/handleError.ts";
-import { type Invitation, InvitationService } from "w-list-api";
+import { InvitationService } from "w-list-api";
 import { AppRoutes } from "@/router";
 import { useRouter } from "vue-router";
+import { type Invitation } from "wlist-types";
+import { checkData } from "w-list-utils";
 
 export const useInvitationStore = defineStore("invitation", () => {
   const invitations = ref<Invitation[]>([]);
@@ -16,6 +18,7 @@ export const useInvitationStore = defineStore("invitation", () => {
     isLoad.value = true;
     try {
       const data = await InvitationService.getAll();
+      checkData(data);
       invitations.value = data;
       return data;
     } catch (error) {
@@ -29,9 +32,8 @@ export const useInvitationStore = defineStore("invitation", () => {
     isLoad.value = true;
     try {
       const data = await InvitationService.validate(token);
-      if (data) {
-        return data;
-      }
+      checkData(data);
+      return data;
     } catch (error) {
       handleError(error, toast);
     } finally {
@@ -43,11 +45,9 @@ export const useInvitationStore = defineStore("invitation", () => {
     isLoad.value = true;
     try {
       const data = await InvitationService.confirm(token, newPassword);
-
-      if (data) {
-        await router.push({ name: AppRoutes.LOGIN });
-        return data;
-      }
+      checkData(data);
+      await router.push({ name: AppRoutes.LOGIN });
+      return data;
     } catch (error) {
       handleError(error, toast);
     } finally {

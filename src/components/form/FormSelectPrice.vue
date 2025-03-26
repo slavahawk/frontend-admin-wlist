@@ -98,7 +98,8 @@ import { reactive } from "vue";
 import { z } from "zod";
 import { handleError } from "@/utils/handleError.ts";
 import { useToast } from "primevue/usetoast";
-import { glassVolumeOptions, type PricesWithGlass } from "w-list-api";
+import { glassVolumeOptions } from "w-list-api";
+import { type PricesWithGlass } from "wlist-types";
 
 const toast = useToast();
 

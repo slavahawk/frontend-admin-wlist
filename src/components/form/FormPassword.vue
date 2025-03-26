@@ -71,7 +71,7 @@ import { Button, Message, Password } from "primevue";
 import { Form } from "@primevue/forms";
 import { z } from "zod";
 import { useRoute } from "vue-router";
-import type { ResetPasswordRequest } from "w-list-api";
+import type { ResetPasswordRequest } from "wlist-types";
 
 const route = useRoute();
 

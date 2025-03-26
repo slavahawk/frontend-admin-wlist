@@ -18,6 +18,7 @@
       :sugar-type="getSugarTypeLabelByValue(wine.wine.sugarType)"
       :country="getCountryNameById(wine.wine.countryId)"
       :category="getCategoryLabelByValue(wine.wine.category)"
+      :category-id="wine.wine.category"
       :colour="getColourLabelByValue(wine.wine.colour)"
       :region="getRegionNameById(wine.wine.regionId)"
     >
@@ -44,8 +45,8 @@ import {
   getCategoryLabelByValue,
   getColourLabelByValue,
   getSugarTypeLabelByValue,
-  type WineListItem,
 } from "w-list-api"; // Импортируйте тип Wine, если это необходимо
+import { type WineListItem } from "wlist-types";
 import { useCountryStore } from "@/stores/countryStore.ts";
 import { useRegionStore } from "@/stores/regionStore.ts";
 import { useGrapeStore } from "@/stores/grapeStore.ts";

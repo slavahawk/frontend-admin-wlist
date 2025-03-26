@@ -1,14 +1,15 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
+import { WineService } from "w-list-api";
+import { handleError } from "@/utils/handleError.ts";
+import { useToast } from "primevue/usetoast";
 import {
   type SearchWineRequest,
   type Wine,
   type WineRequest,
   type WineResponse,
-  WineService,
-} from "w-list-api";
-import { handleError } from "@/utils/handleError.ts";
-import { useToast } from "primevue/usetoast";
+} from "wlist-types";
+import { checkData } from "w-list-utils";
 
 export const useWineStore = defineStore("wine", () => {
   const wines = ref<WineResponse>();
@@ -22,7 +23,9 @@ export const useWineStore = defineStore("wine", () => {
     loading.value = true;
 
     try {
-      wines.value = await WineService.getAll(requestParams);
+      const data = await WineService.getAll(requestParams);
+      checkData(data);
+      wines.value = data;
     } catch (err) {
       handleError(err, toast);
     } finally {
@@ -35,6 +38,7 @@ export const useWineStore = defineStore("wine", () => {
 
     try {
       const data = await WineService.search(params);
+      checkData(data);
       winesSearch.value = data;
       return data;
     } catch (err) {

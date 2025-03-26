@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { type WineList } from "w-list-api";
+import { type WineList } from "wlist-types";
 import { useWineListStore } from "@/stores/wineListStore.ts";
 import { storeToRefs } from "pinia";
 import MainImg from "@/assets/images/main.png";
