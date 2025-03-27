@@ -97,14 +97,36 @@ export const useWineListStore = defineStore("wineList", () => {
     }
   };
 
+  // Функция для удаления списка вин
+  const cloneWineList = async (body: { wineListId: number; name: string }) => {
+    loading.value = true;
+    try {
+      const data = await WineListService.clone(body);
+      checkData(data);
+      wineLists.value.unshift(data);
+      toast.add({ severity: "success", summary: "Создан дубликат карты" });
+      return data;
+    } catch (err) {
+      handleError(err, toast);
+    } finally {
+      loading.value = false;
+    }
+  };
+
   // Функция для создания нового списка вин
   const createWineList = async (wineListData: CreateWineList) => {
-    return executeWithLoading(async () => {
-      const newWineList = await WineListService.create(wineListData);
-      checkData(newWineList);
-      wineLists.value.push(newWineList);
-      return newWineList;
-    });
+    loading.value = true;
+    try {
+      const data = await WineListService.create(wineListData);
+      checkData(data);
+      wineLists.value.unshift(data);
+      toast.add({ severity: "success", summary: "Создана новая карта" });
+      return data;
+    } catch (err) {
+      handleError(err, toast);
+    } finally {
+      loading.value = false;
+    }
   };
 
   const saveImage = async (id: number, image: File) => {
@@ -144,5 +166,6 @@ export const useWineListStore = defineStore("wineList", () => {
     setActiveList,
     activeWineList,
     saveImage,
+    cloneWineList,
   };
 });

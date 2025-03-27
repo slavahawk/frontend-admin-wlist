@@ -124,30 +124,12 @@
   </div>
 
   <!-- Create Wine List Dialog -->
-  <Dialog
-    v-model:visible="createDialogVisible"
-    modal
-    header="Создать винную карту"
-  >
-    <div>
-      <InputText
-        v-model="newWineListName"
-        placeholder="Название винной карты"
-        aria-label="Название винной карты"
-        style="width: 100%"
-      />
-    </div>
-    <div class="flex gap-2 justify-between mt-4">
-      <Button label="Сохранить" icon="pi pi-check" @click="createWineList" />
-      <Button
-        label="Отмена"
-        icon="pi pi-times"
-        @click="() => (createDialogVisible = false)"
-        class="p-button-text"
-      />
-    </div>
-  </Dialog>
-
+  <DialogCreateWineList
+    v-model:show="createDialogVisible"
+    :wineLists="wineLists"
+    @submit="createWineList"
+    @copy="copyWineList"
+  />
   <!-- Edit Wine List Dialog -->
   <Dialog
     v-model:visible="editDialogVisible"
@@ -197,6 +179,7 @@ import { AppRoutes } from "@/router";
 import { useLayout } from "@/layout/composables/layout.ts";
 import { useAuthStore } from "@/stores/authStore.ts";
 import { useRouter } from "vue-router";
+import DialogCreateWineList from "@/components/list/DialogCreateWineList.vue";
 
 const { toggleDarkMode, isDarkTheme } = useLayout();
 const { logout } = useAuthStore();
@@ -208,13 +191,13 @@ const {
   updateWineList: update,
   deleteWineList: deleteWineL,
   setActiveList,
+  cloneWineList,
 } = useWineListStore();
 
 const { wineLists, loading, activeWineList } = storeToRefs(useWineListStore());
 
 const createDialogVisible = ref<boolean>(false);
 const editDialogVisible = ref<boolean>(false);
-const newWineListName = ref<string>("");
 const editWineListName = ref<string>("");
 const currentEditingWineListId = ref<number | null>(null);
 
@@ -223,14 +206,20 @@ const setActive = (id: number) => {
 };
 
 const showCreateWineListDialog = () => {
-  newWineListName.value = ""; // Reset the new list name
   createDialogVisible.value = true;
 };
 
-const createWineList = async () => {
-  if (newWineListName.value.trim()) {
-    await create({ name: newWineListName.value });
-    newWineListName.value = "";
+const createWineList = async (name: string) => {
+  const data = await create({ name });
+  if (data) {
+    createDialogVisible.value = false;
+  }
+};
+
+const copyWineList = async (body: { wineListId: number; name: string }) => {
+  const data = await cloneWineList(body);
+
+  if (data) {
     createDialogVisible.value = false;
   }
 };
