@@ -37,16 +37,6 @@
                 v-tooltip.bottom="`Добавить вино`"
               />
             </div>
-            <div class="flex gap-2 items-center">
-              <Button
-                v-if="wineListItems?.page.totalElements > 0"
-                as="a"
-                link
-                :href="`https://customer.w-list.ru/${activeWineList.shopId}`"
-                target="_blank"
-                >Ссылка на винную карту</Button
-              >
-            </div>
           </div>
         </template>
         <Column>
@@ -146,7 +136,10 @@
         :rowsPerPageOptions="[20, 50]"
       />
 
-      <AddWineDialog v-model:show="showCreateDialog" />
+      <AddWineDialog
+        v-model:show="showCreateDialog"
+        :listId="+route.params.id"
+      />
 
       <div v-if="selectedWine">
         <WineEditPrice
@@ -168,18 +161,18 @@ import { reactive, ref } from "vue";
 import { useWineListItemStore } from "@/stores/wineListItemStore";
 import { storeToRefs } from "pinia";
 import AddWineDialog from "@/components/wineList/AddWineDialog.vue";
-import { useWineListStore } from "@/stores/wineListStore.ts";
 import WineDetailsDialog from "@/components/wineListItem/WineDetailsDialog.vue";
 import { roleWineListItem, type WineListItem } from "wlist-types";
 import { useConfirm } from "primevue";
 import { useToast } from "primevue/usetoast";
 import WineEditPrice from "@/components/wineListItem/WineEditPrice.vue";
-import { vintage, showVintage } from "w-list-utils";
+import { showVintage, vintage } from "w-list-utils";
 import { useCountryStore } from "@/stores/countryStore.ts";
 import { useRegionStore } from "@/stores/regionStore.ts";
 import { WinePriceBottle, WinePriceGlass } from "w-list-components";
 import { useAuthStore } from "@/stores/authStore.ts";
 import FilterSection from "@/components/FilterSection.vue";
+import { useRoute } from "vue-router";
 
 const { user } = storeToRefs(useAuthStore());
 
@@ -189,7 +182,6 @@ const toast = useToast();
 const { fetchWineListItems, deleteWineListItem, updateWineListItem } =
   useWineListItemStore();
 const { wineListItems, loading } = storeToRefs(useWineListItemStore());
-const { activeWineList } = storeToRefs(useWineListStore());
 const { getCountryNameById } = useCountryStore();
 const { getRegionNameById } = useRegionStore();
 
@@ -207,10 +199,11 @@ const params = reactive({
 });
 
 const filterState = ref(false);
+const route = useRoute();
 
 const onParamsChange = (newParams) => {
   Object.assign(params, newParams);
-  fetchWineListItems(activeWineList.value.id, params);
+  fetchWineListItems(+route.params.id, params);
 };
 
 const toggleWineVisibility = async (wine: WineListItem) => {
@@ -222,16 +215,16 @@ const toggleWineVisibility = async (wine: WineListItem) => {
       glassVolume: wine.glassVolume,
       isHidden: !wine.isHidden,
     },
-    listId: activeWineList.value.id,
+    listId: +route.params.id,
   });
 };
 
-if (activeWineList.value) fetchWineListItems(activeWineList.value.id, params);
+if (+route.params.id) fetchWineListItems(+route.params.id, params);
 
 const onPageChange = async ({ page, rows }) => {
   params.page = page;
   params.size = rows;
-  await fetchWineListItems(activeWineList.value.id, params);
+  await fetchWineListItems(+route.params.id, params);
 };
 
 const showCreateDialog = ref(false);
@@ -265,7 +258,7 @@ const deleteWine = (wine: WineListItem) => {
       severity: "danger",
     },
     accept: async () => {
-      await deleteWineListItem(activeWineList.value.id, wine.id);
+      await deleteWineListItem(+route.params.id, wine.id);
     },
     reject: () => {
       toast.add({
@@ -295,7 +288,7 @@ const updateWine = async ({
       isHidden,
       internalComment,
     },
-    listId: activeWineList.value.id,
+    listId: +route.params.id,
   });
 
   if (data) {

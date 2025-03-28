@@ -21,8 +21,8 @@ export const RoutePath: Record<AppRoutes, string> = {
   [AppRoutes.INVITATION]: "/invitation",
   [AppRoutes.INVITATION_CONFIRM]: "/confirm-invitation",
   [AppRoutes.COMMON]: "/common",
-  [AppRoutes.LIST]: "/list",
-  [AppRoutes.LIST_ITEM]: "/",
+  [AppRoutes.LIST]: "/",
+  [AppRoutes.LIST_ITEM]: "/wines/:id",
   [AppRoutes.RESET_PASSWORD]: "/reset-password",
 };
 

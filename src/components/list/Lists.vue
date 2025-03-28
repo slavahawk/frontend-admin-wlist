@@ -9,15 +9,6 @@
       ></Button>
     </div>
     <div class="flex items-center gap-4">
-      <Button
-        v-if="activeWineList"
-        icon="pi pi-arrow-right"
-        severity="success"
-        iconPos="right"
-        size="small"
-        label="Далее"
-        @click="router.push({ name: AppRoutes.LIST_ITEM })"
-      ></Button>
       <div class="layout-config-menu">
         <Button @click="toggleDarkMode" link>
           <i
@@ -54,50 +45,6 @@
 
   <div class="layout-main-container">
     <div>
-      <div class="card">
-        <h1 class="mb-4">Старт 🍷</h1>
-        <p>
-          1. ✨
-          <span
-            class="underline cursor-pointer"
-            @click="showCreateWineListDialog"
-          >
-            Создайте винную карту.</span
-          >
-        </p>
-        <p>
-          2. 🗒️ <Tag severity="success">Активной</Tag> может быть только одна
-          винная карта. Убедитесь, что это именно та карта для вашего заведения.
-        </p>
-        <p>
-          3. 🍇 После создания карты добавляйте вино в активной карте! Появится
-          кнопка -
-          <span v-if="!activeWineList">тут</span>
-          <Button
-            v-else
-            icon="pi pi-arrow-right"
-            severity="success"
-            iconPos="right"
-            size="small"
-            label="Далее"
-            @click="router.push({ name: AppRoutes.LIST_ITEM })"
-          ></Button>
-        </p>
-        <p>
-          4. 🥂 Доступ к винной карте возможен с любого устройства по ссылке. Вы
-          также можете скачать QR-код для быстрого доступа!
-        </p>
-        <p>
-          5. 📞 На любые вопросы готов ответить
-          <a
-            href="https://t.me/slavahawk"
-            target="_blank"
-            style="color: var(--p-primary-400)"
-            >ваш менеджер!</a
-          >
-        </p>
-      </div>
-
       <div class="mb-4 flex gap-4 items-center">
         <h2>Винные карты {{ wineLists.length }}</h2>
 
@@ -118,6 +65,7 @@
           @clickChangeImage="editImage(list)"
           @clickEdit="editWineList(list)"
           @clickDelete="deleteWineList(list.id)"
+          @click-edit-wine="clickEditWine(list.id)"
         />
       </div>
     </div>
@@ -194,7 +142,7 @@ const {
   cloneWineList,
 } = useWineListStore();
 
-const { wineLists, loading, activeWineList } = storeToRefs(useWineListStore());
+const { wineLists, loading } = storeToRefs(useWineListStore());
 
 const createDialogVisible = ref<boolean>(false);
 const editDialogVisible = ref<boolean>(false);
@@ -254,6 +202,10 @@ const editImageList = ref<WineList | null>(null);
 const editImage = (wineList: WineList) => {
   editImageList.value = wineList;
   showEditImage.value = true;
+};
+
+const clickEditWine = (listId: number) => {
+  router.push({ name: AppRoutes.LIST_ITEM, params: { id: listId } });
 };
 </script>
 

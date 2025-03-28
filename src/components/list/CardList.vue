@@ -20,10 +20,19 @@
           :disabled="disabled"
         />
         <Button
+          icon="pi pi-file-edit"
+          class="p-button-warning"
+          severity="success"
+          variant="text"
+          label="Редактировать наполнение карты"
+          @click="!disabled && emit('clickEditWine')"
+          :disabled="disabled"
+        />
+        <Button
           icon="pi pi-pencil"
           variant="text"
           class="p-button-warning"
-          label="Редактировать карту"
+          label="Редактировать название карты"
           @click="!disabled && emit('clickEdit')"
           :disabled="disabled"
         />
@@ -105,6 +114,7 @@ const emit = defineEmits<{
   (e: "clickEdit"): void;
   (e: "clickDelete"): void;
   (e: "setActive"): void;
+  (e: "clickEditWine"): void;
 }>();
 
 const confirm1 = (event) => {

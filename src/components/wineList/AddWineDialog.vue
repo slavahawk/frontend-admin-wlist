@@ -90,7 +90,6 @@ import { type PricesWithGlass, roleWineList, type Wine } from "wlist-types";
 import FormSelectPrice from "@/components/form/FormSelectPrice.vue";
 import { useWineListItemStore } from "@/stores/wineListItemStore.ts";
 import { storeToRefs } from "pinia";
-import { useWineListStore } from "@/stores/wineListStore.ts";
 import { useAuthStore } from "@/stores/authStore.ts";
 import { vintage } from "w-list-utils";
 import { WineCard } from "w-list-components";
@@ -102,13 +101,11 @@ import { useGrapeStore } from "@/stores/grapeStore.ts";
 const { getCountryNameById } = useCountryStore();
 const { getRegionNameById } = useRegionStore();
 const { getGrapesNameById } = useGrapeStore();
-
 const { createWineListItem } = useWineListItemStore();
-
-const { activeWineList } = storeToRefs(useWineListStore());
 
 const props = defineProps<{
   show: boolean;
+  listId: number;
 }>();
 
 const emit = defineEmits<{
@@ -155,7 +152,7 @@ const saveWine = async ({
     pricePerBottle,
     pricePerGlass,
     wineId: findWine.value.id,
-    wineListId: activeWineList.value?.id,
+    wineListId: props.listId,
     glassVolume,
     internalComment,
   });

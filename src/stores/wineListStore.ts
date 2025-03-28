@@ -1,6 +1,6 @@
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { defineStore } from "pinia";
-import { WineListService, ActiveWineListService } from "w-list-api";
+import { ActiveWineListService, WineListService } from "w-list-api";
 import { useToast } from "primevue/usetoast";
 import { handleError } from "@/utils/handleError.ts"; // Пути к сервису управления списками вин
 import { type CreateWineList, type WineList } from "wlist-types";
@@ -55,10 +55,6 @@ export const useWineListStore = defineStore("wineList", () => {
       wineLists.value = await WineListService.getAll();
     });
   };
-
-  const activeWineList = computed(() =>
-    wineLists.value.find((w: WineList) => w.isActive),
-  );
 
   // Функция для получения списка вин по ID
   const fetchWineListById = async (id: number) => {
@@ -164,7 +160,6 @@ export const useWineListStore = defineStore("wineList", () => {
     createWineList,
     clearSelectedWineList,
     setActiveList,
-    activeWineList,
     saveImage,
     cloneWineList,
   };
