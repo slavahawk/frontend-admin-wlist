@@ -9,14 +9,15 @@
     ></Button>
     <Dialog header="QR код винной карты" v-model:visible="isVisible" modal>
       <div ref="qrCodeContainer">
-        <qrcode-vue :value="value" :level="level" :render-as="renderAs" />
+        <qrcode-vue
+          :value="value"
+          :size="300"
+          :level="level"
+          :render-as="renderAs"
+        />
       </div>
       <template #footer>
-        <Button
-          icon="pi pi-qrcode"
-          label="Скачать"
-          @click="saveQRCode"
-        ></Button>
+        <Button icon="pi pi-save" label="Скачать" @click="saveQRCode"></Button>
       </template>
     </Dialog>
   </div>
