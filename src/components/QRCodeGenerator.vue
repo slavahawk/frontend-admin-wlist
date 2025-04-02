@@ -1,15 +1,24 @@
 <template>
   <div>
-    <div ref="qrCodeContainer" v-show="false">
-      <qrcode-vue :value="value" :level="level" :render-as="renderAs" />
-    </div>
     <Button
       icon="pi pi-qrcode"
       variant="text"
       size="small"
       label="Скачать QR карты"
-      @click="saveQRCode"
+      @click="isVisible = true"
     ></Button>
+    <Dialog header="QR код винной карты" v-model:visible="isVisible" modal>
+      <div ref="qrCodeContainer">
+        <qrcode-vue :value="value" :level="level" :render-as="renderAs" />
+      </div>
+      <template #footer>
+        <Button
+          icon="pi pi-qrcode"
+          label="Скачать"
+          @click="saveQRCode"
+        ></Button>
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -41,6 +50,8 @@ const saveQRCode = async () => {
     link.click(); // Trigger download
   }
 };
+
+const isVisible = ref(false);
 </script>
 
 <style scoped>

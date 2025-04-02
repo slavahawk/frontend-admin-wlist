@@ -24,7 +24,7 @@
           class="p-button-warning"
           severity="success"
           variant="text"
-          label="Редактировать наполнение карты"
+          label="Редактировать карту"
           @click="!disabled && emit('clickEditWine')"
           :disabled="disabled"
         />
@@ -32,7 +32,7 @@
           icon="pi pi-pencil"
           variant="text"
           class="p-button-warning"
-          label="Редактировать название карты"
+          label="Изменить название"
           @click="!disabled && emit('clickEdit')"
           :disabled="disabled"
         />
