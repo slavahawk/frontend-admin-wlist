@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { GrapeService } from "w-list-api";
 import { useToast } from "primevue/usetoast";
 import { handleError } from "@/utils/handleError.ts";
-import { type Grape } from "wlist-types";
+import { type Grape, type GrapeData } from "wlist-types";
 import { checkData } from "w-list-utils";
 
 export const useGrapeStore = defineStore("grape", () => {
@@ -18,10 +18,14 @@ export const useGrapeStore = defineStore("grape", () => {
     })),
   );
 
-  const getGrapesNameById = (grapeIds: number[]): string[] => {
-    return grapeIds
-      .map((id) => grapes.value.find((grape) => grape.id === id)?.name ?? null)
-      .filter((name): name is string => name !== null); // Используем "type predicate" для явной типизации
+  const getGrapesNameById = (grapeData: GrapeData[]): string[] => {
+    return grapeData
+      .map(
+        (grapeD) =>
+          grapes.value.find((g: Grape) => g.id === grapeD.grapeId)?.name ??
+          null,
+      )
+      .filter((name) => name !== null);
   };
 
   const setLoading = (state: boolean) => {

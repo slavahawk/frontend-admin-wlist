@@ -14,7 +14,7 @@
       :interesting-facts="wine.wine.interestingFacts"
       :organoleptic="wine.wine.organoleptic"
       :vintage="vintage(wine.wine.vintage)"
-      :grapes="getGrapesNameById(wine.wine.grapeIds)"
+      :grapes="getGrapesNameById(wine.wine.grapeData)"
       :sugar-type="getSugarTypeLabelByValue(wine.wine.sugarType)"
       :country="getCountryNameById(wine.wine.countryId)"
       :category="getCategoryLabelByValue(wine.wine.category)"

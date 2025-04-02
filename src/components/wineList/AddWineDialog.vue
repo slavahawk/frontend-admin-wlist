@@ -50,7 +50,7 @@
                   :alcohol-by-volume="findWine.alcoholByVolume"
                   :interesting-facts="findWine.interestingFacts"
                   :organoleptic="findWine.organoleptic"
-                  :grapes="getGrapesNameById(findWine.grapeIds)"
+                  :grapes="getGrapesNameById(findWine.grapeData)"
                   :vintage="vintage(findWine.vintage)"
                   :sugar-type="getSugarTypeLabelByValue(findWine.sugarType)"
                   :country="getCountryNameById(findWine.countryId)"
