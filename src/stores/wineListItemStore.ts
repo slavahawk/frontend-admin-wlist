@@ -91,6 +91,7 @@ export const useWineListItemStore = defineStore("wineListItems", () => {
     } catch (error) {
       handleError(error, toast);
     } finally {
+      console.log("23");
       loading.value = false;
     }
   };

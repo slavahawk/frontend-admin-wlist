@@ -18,9 +18,10 @@
                 <div class="flex flex-col gap-2">
                   <AutoComplete
                     v-model="findWine"
-                    :suggestions="items"
+                    :suggestions="candidates._embedded?.adminWineResponseList"
                     @complete="search"
                     optionLabel="name"
+                    :loading="loading"
                     placeholder="Найти вино"
                   >
                     <template #option="{ option }">
@@ -80,23 +81,22 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { useWineStore } from "@/stores/wineStore.ts";
 import {
   getCategoryLabelByValue,
   getColourLabelByValue,
   getSugarTypeLabelByValue,
 } from "w-list-api";
-import { type PricesWithGlass, roleWineList, type Wine } from "wlist-types";
+import { type PricesWithGlass, type Wine } from "wlist-types";
 import FormSelectPrice from "@/components/form/FormSelectPrice.vue";
 import { useWineListItemStore } from "@/stores/wineListItemStore.ts";
 import { storeToRefs } from "pinia";
-import { useAuthStore } from "@/stores/authStore.ts";
 import { vintage } from "w-list-utils";
 import { WineCard } from "w-list-components";
 
 import { useCountryStore } from "@/stores/countryStore.ts";
 import { useRegionStore } from "@/stores/regionStore.ts";
 import { useGrapeStore } from "@/stores/grapeStore.ts";
+import { useRoute } from "vue-router";
 
 const { getCountryNameById } = useCountryStore();
 const { getRegionNameById } = useRegionStore();
@@ -122,16 +122,13 @@ const isVisible = computed({
 });
 
 const findWine = ref<string | Wine>("");
-const items = ref([]);
 const currentStep = ref("1");
-const { fetchWinesSearch } = useWineStore();
-const { user } = storeToRefs(useAuthStore());
+const { getCandidates } = useWineListItemStore();
+const { candidates, loading } = storeToRefs(useWineListItemStore());
+const route = useRoute();
 
-const search = async (event: { query: string }) => {
-  const data = await fetchWinesSearch({ name: event.query, page: 0, size: 20 });
-  if (data) {
-    items.value = data._embedded?.[roleWineList(user.value?.role)];
-  }
+const search = (event: { query: string }) => {
+  getCandidates(+route.params.id, event.query);
 };
 
 const nextStep = () => {
